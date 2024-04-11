@@ -52,9 +52,9 @@ START
     movwf   0x35
 ;    
 ;    Pocz?tkowe strza?y pierwszego gracza:
-    movlw   b'00000000'
+    movlw   b'00000001'
     movwf   0x36
-    movlw   b'00000000'
+    movlw   b'00000010'
     movwf   0x37
     movlw   b'00000000'
     movwf   0x38
@@ -120,6 +120,7 @@ MAIN
 ;   TEST DZIA?ANIA WY?WIETLACZA
     call CLOCK_TURN_ON
     call CLOCK_LIGHT_FIRST_ROW
+    call DISPLAY_PLAYER_BOARD
 
 
 TURY_GRACZY
@@ -130,6 +131,8 @@ TURY_GRACZY
 ;    Przyjmij ruch
 call PRZYJMIJ_RUCH
 call PRZYJMIJ_RUCH
+call DISPLAY_PLAYER_BOARD
+
     
 ;    TEST CZY PRZYJMOWANIE RUCHÓW DZIA?A
     MOVLW   0x00
@@ -371,6 +374,83 @@ CLOCK_LIGHT_FIRST_ROW
     call LOAD_PULSE
     return
 
+DISPLAY_PLAYER_BOARD
+    MOVLW   0x01
+    MOVWF   0x2B
+    MOVF 0x36, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x02
+    MOVWF   0x2B
+    MOVF 0x37, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x03
+    MOVWF   0x2B
+    MOVF 0x38, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x04
+    MOVWF   0x2B
+    MOVF 0x39, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x05
+    MOVWF   0x2B
+    MOVF 0x40, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x06
+    MOVWF   0x2B
+    MOVF 0x41, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x07
+    MOVWF   0x2B
+    MOVF 0x42, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x08
+    MOVWF   0x2B
+    MOVF 0x43, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    
+    return
+    
+    
+DISPLAY_ON_MATRIX_ROW_DATA
+    BCF	    PORTA, 0
+    MOVLW   0x08
+    MOVWF   0x3B   
+DISPLAY_ADRESS_LOOP
+    BTFSC   0x2B, 7 ;bit test skip if clear
+    BSF	    PORTA, 0
+    call    CLOCK_PULSE
+    BCF	    PORTA, 0
+    BCF	    STATUS, C
+    RLF	    0x2B, 1
+    
+    DECFSZ  0x3B, 1
+    goto DISPLAY_ADRESS_LOOP
+
+    
+    MOVLW   0x08
+    MOVWF   0x3B
+DISPLAY_VALUE_LOOP
+    BCF	    PORTA, 0
+    BTFSC   0x2C, 7 ;bit test skip if clear
+    BSF	    PORTA, 0
+    call    CLOCK_PULSE
+    BCF	    PORTA, 0
+    BCF	    STATUS, C
+    RLF	    0x2C, 1
+    
+    DECFSZ  0x3B, 1
+    goto DISPLAY_VALUE_LOOP
+    call LOAD_PULSE
+    return
+    
     
     end
     
