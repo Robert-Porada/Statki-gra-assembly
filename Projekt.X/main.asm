@@ -82,9 +82,9 @@ START
     movwf   0x48
     movlw   b'00000000'
     movwf   0x49
-    movlw   b'00000000'
+    movlw   b'10000000'
     movwf   0x50
-    movlw   b'00000000'
+    movlw   b'10000000'
     movwf   0x51
     
 ;    DANE ODNO?NIE TURY GRACZA
@@ -119,8 +119,6 @@ MAIN
 
 ;   TEST DZIA?ANIA WY?WIETLACZA
     call CLOCK_TURN_ON
-    call CLOCK_LIGHT_FIRST_ROW
-    call DISPLAY_PLAYER_BOARD
 
 
 TURY_GRACZY
@@ -129,8 +127,14 @@ TURY_GRACZY
 ;    Wy?wietl tura gracza 1 i 
 ;    Zapyraj o ruch
 ;    Przyjmij ruch
+call DISPLAY_PLAYER_BOARD
+    
 call PRZYJMIJ_RUCH
+
+call DISPLAY_PLAYER_BOARD
+    
 call PRZYJMIJ_RUCH
+   
 call DISPLAY_PLAYER_BOARD
 
     
@@ -160,7 +164,7 @@ call DISPLAY_PLAYER_BOARD
 ;   ==============================================================
     
 ;   ================PRZYJMOWANIE RUCHU GRACZY=====================
-    PRZYJMIJ_RUCH
+PRZYJMIJ_RUCH
 ;    Wybieranie kolumny
     BTFSC   PORTB, 0
     BSF	    0x52, 0
@@ -245,6 +249,7 @@ ZAPIS_RUCHU_GRACZ_1
     
 ;    PO?REDNIA ADRESACJA, ZMIANA W MACIERZY STRZA?ÓW
     MOVWF   FSR
+    CLRF INDF
     BCF	    STATUS, IRP
     MOVF    0x53, W
     MOVWF   INDF
@@ -254,9 +259,7 @@ ZAPIS_RUCHU_GRACZ_1
     MOVWF   PORTA
     
 ;   ZMIANA NA NEXT GRACZA
-    BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
     BSF	    0x2A, 0
-    BCF	    0x2A, 0
 
 ;   CZYSZCZENIE ZAWARTO?CI ADRESÓW
     MOVLW   0x00
@@ -287,6 +290,7 @@ ZAPIS_RUCHU_GRACZ_2
     
     ;    PO?REDNIA ADRESACJA, ZMIANA W MACIERZY STRZA?ÓW
     MOVWF   FSR
+    CLRF INDF
     BCF	    STATUS, IRP
     MOVF    0x53, W
     MOVWF   INDF
@@ -296,8 +300,6 @@ ZAPIS_RUCHU_GRACZ_2
     MOVWF   PORTA
     
 ;   ZMIANA NA NEXT GRACZA
-    BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
-    BSF	    0x2A, 0
     BCF	    0x2A, 0
     
 ;   CZYSZCZENIE ZAWARTO?CI ADRESÓW
@@ -349,32 +351,16 @@ CLOCK_TURN_ON
     call CLOCK_PULSE
     call LOAD_PULSE
     return    
-    
-CLOCK_LIGHT_FIRST_ROW
-;   TURN ON FIRST ROW OF LEDS - ADRES
-    BCF	    PORTA, 0
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    BSF	    PORTA, 0
-    call CLOCK_PULSE
-;   TURN ON FIRST ROW OF LEDS - DATA
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call CLOCK_PULSE
-    call LOAD_PULSE
-    return
+
 
 DISPLAY_PLAYER_BOARD
+;    Wybieranie gracza
+    BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
+    goto    DISPLAY_PLAYER_BOARD_PLAYER_1
+    goto    DISPLAY_PLAYER_BOARD_PLAYER_2    
+    
+    
+DISPLAY_PLAYER_BOARD_PLAYER_1
     MOVLW   0x01
     MOVWF   0x2B
     MOVF 0x36, W
@@ -415,9 +401,52 @@ DISPLAY_PLAYER_BOARD
     MOVF 0x43, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
-    
+
     return
-    
+
+DISPLAY_PLAYER_BOARD_PLAYER_2
+    MOVLW   0x01
+    MOVWF   0x2B
+    MOVF 0x44, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x02
+    MOVWF   0x2B
+    MOVF 0x45, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x03
+    MOVWF   0x2B
+    MOVF 0x46, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x04
+    MOVWF   0x2B
+    MOVF 0x47, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x05
+    MOVWF   0x2B
+    MOVF 0x48, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x06
+    MOVWF   0x2B
+    MOVF 0x49, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x07
+    MOVWF   0x2B
+    MOVF 0x50, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+    MOVLW   0x08
+    MOVWF   0x2B
+    MOVF 0x51, W
+    MOVWF   0x2C
+    call DISPLAY_ON_MATRIX_ROW_DATA
+
+    return    
     
 DISPLAY_ON_MATRIX_ROW_DATA
     BCF	    PORTA, 0
