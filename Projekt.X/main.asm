@@ -5,6 +5,19 @@ RES_VECT CODE 0x0000
 MAIN_PROG CODE
  
 START
+;   DANE O ADRESACH W U?YCIU
+;   0x20 - 0x29 --> przechowywuje board
+;   0x30 - 0x35 --> przechowywuje board
+;   0x36 - 0x39 --> przechowywuje strzaly
+;   0x40 - 0x49 --> przechowywuje strzaly
+;   0x50 - 0x51 --> przechowywuje strzaly
+;   0x52, 0x53	--> adresowanie posrednie, adres, wartosc
+;   0x2A, 0	--> informacja o tym ktorego gracza tura
+;   0x2B, 0x2C	--> stosowane do wyswietlania ruchów graczy
+;   0x3A	--> stosowany w zapisywaniu kolejnych ruchow
+;   0x3B	--> stosowane do wyswietlania ruchów graczy
+;
+;
 ;   DANE O GRZE - BOARD STATE ZAPISUJEMY W BANKU 00
     bcf STATUS, RP1
     bcf STATUS, RP0
@@ -52,9 +65,9 @@ START
     movwf   0x35
 ;    
 ;    Pocz?tkowe strza?y pierwszego gracza:
-    movlw   b'00000001'
+    movlw   b'10000000'
     movwf   0x36
-    movlw   b'00000010'
+    movlw   b'10000000'
     movwf   0x37
     movlw   b'00000000'
     movwf   0x38
@@ -70,9 +83,9 @@ START
     movwf   0x43
 ;    
 ;    Pocz?tkowe strza?y drugiego gracza:
-    movlw   b'00000000'
+    movlw   b'00000001'
     movwf   0x44
-    movlw   b'00000000'
+    movlw   b'00000001'
     movwf   0x45
     movlw   b'00000000'
     movwf   0x46
@@ -82,9 +95,9 @@ START
     movwf   0x48
     movlw   b'00000000'
     movwf   0x49
-    movlw   b'10000000'
+    movlw   b'00000000'
     movwf   0x50
-    movlw   b'10000000'
+    movlw   b'00000000'
     movwf   0x51
     
 ;    DANE ODNO?NIE TURY GRACZA
@@ -127,6 +140,7 @@ TURY_GRACZY
 ;    Wy?wietl tura gracza 1 i 
 ;    Zapyraj o ruch
 ;    Przyjmij ruch
+    
 call DISPLAY_PLAYER_BOARD
     
 call PRZYJMIJ_RUCH
@@ -137,10 +151,6 @@ call PRZYJMIJ_RUCH
    
 call DISPLAY_PLAYER_BOARD
 
-    
-;    TEST CZY PRZYJMOWANIE RUCHÓW DZIA?A
-    MOVLW   0x00
-    MOVWF   PORTD
     
 ;    sprawd? czy trafi?
 ;    POWIEDZ NA WY?WIETLACZU CZY TRAFI? 
@@ -190,9 +200,6 @@ PRZYJMIJ_RUCH
     goto PRZYJMIJ_RUCH
     
 PRZYJMIJ_RUCH_WIERSZ
-;    POMOC W TESTACH DO USUNI?CIA
-    MOVF    0x52, W
-    MOVWF   PORTD
 
     BTFSC   PORTC, 0
     BSF	    0x53, 0
@@ -219,17 +226,17 @@ PRZYJMIJ_RUCH_WIERSZ
     goto PRZYJMIJ_RUCH_WIERSZ    
     
 ZAPISZ_RUCH_GRACZY
-;    POMOC W TESTACH DO USUNI?CIA
-    MOVF    0x53, W
-    MOVWF   PORTD
+
     
 ;    Wybieranie gracza
     BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
     goto    ZAPIS_RUCHU_GRACZ_1
+    BTFSC   0x2A, 0 ;Bit Test, Skip if Clear
     goto    ZAPIS_RUCHU_GRACZ_2
     
 ZAPIS_RUCHU_GRACZ_1
 ;    ODZYSKIWANIE ADRESU KOLUMNY ZE ZMIENNEJ 0x52
+    
     BTFSC   0x52, 0
     MOVLW   0x36
     BTFSC   0x52, 1
@@ -249,14 +256,46 @@ ZAPIS_RUCHU_GRACZ_1
     
 ;    PO?REDNIA ADRESACJA, ZMIANA W MACIERZY STRZA?ÓW
     MOVWF   FSR
-    CLRF INDF
     BCF	    STATUS, IRP
-    MOVF    0x53, W
-    MOVWF   INDF
     
-;    POMOC W TESTACH DO USUNI?CIA
+    BTFSC   0x52, 0
     MOVF    0x36, W
-    MOVWF   PORTA
+    BTFSC   0x52, 1
+    MOVF    0x37, W
+    BTFSC   0x52, 2
+    MOVF    0x38, W
+    BTFSC   0x52, 3
+    MOVF    0x39, W
+    BTFSC   0x52, 4
+    MOVF    0x40, W
+    BTFSC   0x52, 5
+    MOVF    0x41, W
+    BTFSC   0x52, 6
+    MOVF    0x42, W
+    BTFSC   0x52, 7
+    MOVF    0x43, W
+    
+    MOVWF   0x3A
+    
+    BTFSC   0x53, 0
+    BSF	    0x3A, 0
+    BTFSC   0x53, 1
+    BSF	    0x3A, 1
+    BTFSC   0x53, 2
+    BSF	    0x3A, 2
+    BTFSC   0x53, 3
+    BSF	    0x3A, 3
+    BTFSC   0x53, 4
+    BSF	    0x3A, 4
+    BTFSC   0x53, 5
+    BSF	    0x3A, 5
+    BTFSC   0x53, 6
+    BSF	    0x3A, 6
+    BTFSC   0x53, 7
+    BSF	    0x3A, 7
+    
+    MOVF    0x3A, W
+    MOVWF   INDF
     
 ;   ZMIANA NA NEXT GRACZA
     BSF	    0x2A, 0
@@ -290,14 +329,46 @@ ZAPIS_RUCHU_GRACZ_2
     
     ;    PO?REDNIA ADRESACJA, ZMIANA W MACIERZY STRZA?ÓW
     MOVWF   FSR
-    CLRF INDF
     BCF	    STATUS, IRP
-    MOVF    0x53, W
-    MOVWF   INDF
     
-;    POMOC W TESTACH DO USUNI?CIA
-    MOVF    0x52, W
-    MOVWF   PORTA
+    BTFSC   0x52, 0
+    MOVF    0x44, W
+    BTFSC   0x52, 1
+    MOVF    0x45, W
+    BTFSC   0x52, 2
+    MOVF    0x46, W
+    BTFSC   0x52, 3
+    MOVF    0x47, W
+    BTFSC   0x52, 4
+    MOVF    0x48, W
+    BTFSC   0x52, 5
+    MOVF    0x48, W
+    BTFSC   0x52, 6
+    MOVF    0x50, W
+    BTFSC   0x52, 7
+    MOVF    0x51, W
+    
+    MOVWF   0x3A
+    
+    BTFSC   0x53, 0
+    BSF	    0x3A, 0
+    BTFSC   0x53, 1
+    BSF	    0x3A, 1
+    BTFSC   0x53, 2
+    BSF	    0x3A, 2
+    BTFSC   0x53, 3
+    BSF	    0x3A, 3
+    BTFSC   0x53, 4
+    BSF	    0x3A, 4
+    BTFSC   0x53, 5
+    BSF	    0x3A, 5
+    BTFSC   0x53, 6
+    BSF	    0x3A, 6
+    BTFSC   0x53, 7
+    BSF	    0x3A, 7    
+    
+    MOVF    0x3A, W
+    MOVWF   INDF
     
 ;   ZMIANA NA NEXT GRACZA
     BCF	    0x2A, 0
@@ -309,7 +380,6 @@ ZAPIS_RUCHU_GRACZ_2
     MOVWF   0x53
     
     return
-    
     
     
 ;   ================ KONTROLA LED MATRIX=======================
