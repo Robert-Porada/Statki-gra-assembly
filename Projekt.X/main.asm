@@ -12,62 +12,70 @@ START
 ;   0x40 - 0x49 --> przechowywuje strzaly
 ;   0x50 - 0x51 --> przechowywuje strzaly
 ;   0x52, 0x53	--> adresowanie posrednie, adres, wartosc
+;   0x54,	--> zawiera 0xFF u?ywany przy sprawdzaniu ko?ca gry
 ;   0x2A, 0	--> informacja o tym ktorego gracza tura
 ;   0x2B, 0x2C	--> stosowane do wyswietlania ruchów graczy
 ;   0x3A	--> stosowany w zapisywaniu kolejnych ruchow
 ;   0x3B	--> stosowane do wyswietlania ruchów graczy
-;
+;   0x3C, 0	--> Flaga czy ostatni strzal byl trafiony
+;		    1 - trafiony, 0 - nie trafiony
+;   0x3C, 1	--> Flaga konca gry, dla gracza 1
+;		    1 - wygral, 0 - nie wygra?
+;   0x3C, 2	--> Flaga konca gry, dla gracza 2
+;		    1 - wygral, 0 - nie wygra?
+;   0x2D 0x2E, 0x2F --> funkcja czekaj
 ;
 ;   DANE O GRZE - BOARD STATE ZAPISUJEMY W BANKU 00
     bcf STATUS, RP1
     bcf STATUS, RP0
-;    Reprezentacja board state gracza pierwszego
-;    Statki do roz?o?enia:
-;    1 statek 4x1
-;    2 statki 3x1
-;    3 statki 2x1
-;    4 statki 1x1
+;   Reprezentacja board state gracza pierwszego
+;   Statki do rozlozenia:
+;   1 statek 4x1
+;   2 statki 3x1
+;   3 statki 2x1
+;   4 statki 1x1
 ;
-;    Pocz?tkowy board state pierwszego gracza:
-    movlw   b'11110000'
+;   W celu testow, rozlozona minimalna ilosc statkow
+;   Poczatkowy board state pierwszego gracza:
+    movlw   b'00000000'
     movwf   0x20
-    movlw   b'00000111'
+    movlw   b'00000011'
     movwf   0x21
-    movlw   b'11000000'
+    movlw   b'00000000'
     movwf   0x22
-    movlw   b'00001100'
+    movlw   b'00000000'
     movwf   0x23
-    movlw   b'11000000'
+    movlw   b'00000000'
     movwf   0x24
-    movlw   b'00001110'
+    movlw   b'00000000'
     movwf   0x25
-    movlw   b'10100000'
+    movlw   b'00000000'
     movwf   0x26
-    movlw   b'01010000'
+    movlw   b'00000000'
     movwf   0x27
 ; 
 ;    Pocz?tkowy board state drugiego gracza:
-    movlw   b'01010000'
+    movlw   b'01100000'
     movwf   0x28
-    movlw   b'00000101'
+    movlw   b'00000000'
     movwf   0x29
-    movlw   b'00110000'
+    movlw   b'00000000'
     movwf   0x30
-    movlw   b'11001100'
+    movlw   b'00000000'
     movwf   0x31
-    movlw   b'00110000'
+    movlw   b'00000000'
     movwf   0x32
-    movlw   b'00000111'
+    movlw   b'00000000'
     movwf   0x33
-    movlw   b'11100000'
+    movlw   b'00000000'
     movwf   0x34
-    movlw   b'00001111'
+    movlw   b'00000000'
     movwf   0x35
 ;    
 ;    Pocz?tkowe strza?y pierwszego gracza:
-    movlw   b'10000000'
+    movlw   b'00000000'
     movwf   0x36
-    movlw   b'10000000'
+    movlw   b'00000000'
     movwf   0x37
     movlw   b'00000000'
     movwf   0x38
@@ -83,9 +91,9 @@ START
     movwf   0x43
 ;    
 ;    Pocz?tkowe strza?y drugiego gracza:
-    movlw   b'00000001'
+    movlw   b'00000000'
     movwf   0x44
-    movlw   b'00000001'
+    movlw   b'00000000'
     movwf   0x45
     movlw   b'00000000'
     movwf   0x46
@@ -105,9 +113,24 @@ START
 ;    JE?LI 0x2A = 1 gracz 2
     movlw   0x00
     movwf   0x2A
+
+;   Stosowane przy sprawdzaniu ko?ca gry
+    MOVLW   0xFF
+    MOVWF   0x54
     
+;   Dane odno?nie trafienia
+;   Jesli 0x3C = 0 ostatni strzal nie trafiony
+;   Jesli 0x3C = 1 ostatni strzal trafiony
+    BCF	    0x3C, 0
+
+;   Dane odno?nie ko?ca gry
+;   0x3C, 1	--> Flaga konca gry, dla gracza 1
+;		    1 - wygral, 0 - nie wygra?
+;   0x3C, 2	--> Flaga konca gry, dla gracza 2
+;		    1 - wygral, 0 - nie wygra?
+    BCF	    0x3C, 1
+    BCF	    0x3C, 2
     
-MAIN
 ;   POCZ?TKOWY SETUP
 ;   ZMIANA WEJ??/WYJ?? PORTÓW NAST?PUJE W BANKU 01
     bcf STATUS, RP1
@@ -130,48 +153,185 @@ MAIN
     bcf STATUS, RP1
     bcf STATUS, RP0
 
-;   TEST DZIA?ANIA WY?WIETLACZA
+;   Wlacza LED MATRIX
     call CLOCK_TURN_ON
 
 
 TURY_GRACZY
 ;    DLA GRACZA 1
 ;    ||
-;    Wy?wietl tura gracza 1 i 
-;    Zapyraj o ruch
-;    Przyjmij ruch
-    
-call DISPLAY_PLAYER_BOARD
-    
-call PRZYJMIJ_RUCH
+;   TODO Wyswietl 'tura gracza 1' i 
+;   TODO Zapyraj o ruch
+    call DISPLAY_PLAYER_BOARD ; Wy?wietla na LED matrix strza?y gracza 1
+    call PRZYJMIJ_RUCH ; Przyjmuje ruch od gracza 1
+    call CZY_TRAFIL_TEKST ; TODO wy?wietla tekst 'trafiony albo nie trafiony'
+    call SPRAWDZ_CZY_GRACZ_1_WYGRAL ; Sprawdza czy gracz 1 wygra?
+    BTFSC   0x3C, 1 ; Je?li wygra? gracz 1 to wywo?aj funkcj?
+    call WYGRAL_GRACZ_1_TEKST ; TODO wy?wietla 'wygra? gracz 1'
 
-call DISPLAY_PLAYER_BOARD
-    
-call PRZYJMIJ_RUCH
-   
-call DISPLAY_PLAYER_BOARD
-
-    
-;    sprawd? czy trafi?
-;    POWIEDZ NA WY?WIETLACZU CZY TRAFI? 
-;    sprawd? czy gra si? sko?czy?a je?li tak wy?wietl i zatrzymaj program
-;    
 ;    DLA GRACZA 2
 ;    ||
-;    Wy?wietl tura gracza 2 i 
-;    Zapyraj o ruch
-;    Przyjmij ruch
-;    sprawd? czy trafi?
-;    POWIEDZ NA WY?WIETLACZU CZY TRAFI? 
-;    sprawd? czy gra si? sko?czy?a je?li tak wy?wietl i zatrzymaj program
-    
-    
+;   TODO Wyswietl 'tura gracza 2' i 
+;   TODO Zapyraj o ruch
+    call DISPLAY_PLAYER_BOARD ; Wy?wietla na LED matrix strza?y gracza 2
+    call PRZYJMIJ_RUCH ; Przyjmuje ruch od gracza 2
+    call CZY_TRAFIL_TEKST ; TODO wy?wietla tekst 'trafiony albo nie trafiony'
+    call SPRAWDZ_CZY_GRACZ_2_WYGRAL ; Sprawdza czy gracz 2 wygra?
+    BTFSC   0x3C, 2 ; Je?li wygra? gracz 2 to wywo?aj funkcj?
+    call WYGRAL_GRACZ_2_TEKST ; TODO wy?wietla 'wygra? gracz 2'
+
     goto TURY_GRACZY
-    goto MAIN
 
 ;   ==============================================================
 ;   ============================FUNKCJE===========================    
 ;   ==============================================================
+;
+;   ================Wiadomosc o wygranej gracz 1==================
+WYGRAL_GRACZ_1_TEKST
+    
+    MOVLW   0xFF ; ZAPALA WSZYSTKIE LAMPKI PORTD 
+    MOVWF   PORTD
+    goto $ ; KO?CZY PROGRAM
+    return
+;
+;   =================sprawdz czy gracz 1 wygral===================
+SPRAWDZ_CZY_GRACZ_1_WYGRAL
+; Wst?pnie ustawiona na tak, je?li obleje który?
+; z warunków b?dzie ustawiona na 0
+    BSF	    0x3C, 1
+    
+; Procedura sprawdzania polega na implikacji a => b
+; Gdzie 'a' to pozycje statków, a 'b' to strza?y 
+    COMF    0x28, 0 ; statki gracza 2 w pierwszym wierszu
+    IORWF   0x36, 0 ; strza?y gracza 1 w pierwszym wierszu
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z ; Je?li Z = 1 to nie wykonyje linijki ni?ej
+    BCF	    0x3C, 1 ; Je?li Z = 0 to warunek nie spe?niony
+; Powtórzone dla kolejnych 7 kolumn.
+    COMF    0x29, 0
+    IORWF   0x37, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 1
+
+    COMF    0x30, 0
+    IORWF   0x38, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 1
+
+    COMF    0x31, 0
+    IORWF   0x39, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 1
+
+    COMF    0x32, 0
+    IORWF   0x40, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 1
+
+    COMF    0x33, 0
+    IORWF   0x41, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 1
+
+    COMF    0x34, 0
+    IORWF   0x42, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 1
+
+    COMF    0x35, 0
+    IORWF   0x43, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 1
+    
+    return
+;   ================Wiadomosc o wygranej gracz 2==================
+WYGRAL_GRACZ_2_TEKST
+    
+    MOVLW   0x0F ; ZAPALA pierwsze 4 lampki portu D 
+    MOVWF   PORTD
+    goto $ ; KO?CZY PROGRAM
+    return
+;
+;   =================sprawdz czy gracz 2 wygral===================
+SPRAWDZ_CZY_GRACZ_2_WYGRAL
+    BSF	    0x3C, 2
+    
+    COMF    0x20, 0 ; statki gracza 1 w pierwszym wierszu
+    IORWF   0x44, 0 ; strza?y gracza 2 w pierwszym wierszu
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z ; Je?li Z = 1 to nie wykonyje linijki ni?ej
+    BCF	    0x3C, 2 ; Je?li Z = 0 to warunek nie spe?niony
+; Powtórzone dla kolejnych 7 kolumn.
+    COMF    0x21, 0
+    IORWF   0x45, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 2
+
+    COMF    0x22, 0
+    IORWF   0x46, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 2
+
+    COMF    0x23, 0
+    IORWF   0x47, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 2
+
+    COMF    0x24, 0
+    IORWF   0x48, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 2
+
+    COMF    0x25, 0
+    IORWF   0x49, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 2
+
+    COMF    0x26, 0
+    IORWF   0x50, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 2
+
+    COMF    0x27, 0
+    IORWF   0x51, 0
+    SUBWF   0x54, 0
+    BTFSS   STATUS, Z 
+    BCF	    0x3C, 2
+    
+    return
+;   ==================Wyswietl czy trafione=======================
+CZY_TRAFIL_TEKST
+; jak na razie tylko miejsce do sprawdzania czy logika flagi
+; trafienia dziala ale pó?niej mo?na w tym miejscu dodac 
+; wyswietlanie na wyswietlaczu wiadomosci
+    BTFSC   0x3C, 0 ; skip if clear
+    BSF	    PORTA, 4; TRAFIONY!!!
+    BTFSS   0x3C, 0 ; skip if set
+    BSF	    PORTA, 5; Nie trafiony 
+    
+    MOVLW   0x03 ; Dioda zapala si? na chwil? 
+    MOVWF   0x2D ; Je?li trafiono dioda A4
+    call CZEKAJ	 ; Je?li nie trafiono dioda A5
+    
+    BCF	    PORTA, 4 ; Ca?a funkcja do zast?pienia 
+    BCF	    PORTA, 5 ; Wy?wietlaniem
+    
+return
+    
+    
     
 ;   ================PRZYJMOWANIE RUCHU GRACZY=====================
 PRZYJMIJ_RUCH
@@ -297,6 +457,35 @@ ZAPIS_RUCHU_GRACZ_1
     MOVF    0x3A, W
     MOVWF   INDF
     
+    ; Wyczyszczanie flagi trafienia po ostatnim graczu
+    BCF	    0x3C, 0 
+    ; Sprawdzanie czy gracz 1 trafi? gracza 2
+    BTFSC   0x52, 0
+    MOVF    0x28, W
+    BTFSC   0x52, 1
+    MOVF    0x29, W
+    BTFSC   0x52, 2
+    MOVF    0x30, W
+    BTFSC   0x52, 3
+    MOVF    0x31, W
+    BTFSC   0x52, 4
+    MOVF    0x32, W
+    BTFSC   0x52, 5
+    MOVF    0x33, W
+    BTFSC   0x52, 6
+    MOVF    0x34, W
+    BTFSC   0x52, 7
+    MOVF    0x35, W
+    
+    ; Logiczne and pozycji statku ze strza?em
+    ANDWF   0x53, 0
+    ; Bit Z z rejestru status:
+    ; Z = 1 , The result of an arithmetic or logic operation is zero
+    ; Z = 0 , The result of an arithmetic or logic operation is not zero
+    BTFSS   STATUS, Z ; Bit Test f, Skip if Set, je?li Z = 1 skipuje.
+    BSF	    0x3C, 0; Ustawienie flagi trafienia.
+    
+    
 ;   ZMIANA NA NEXT GRACZA
     BSF	    0x2A, 0
 
@@ -365,10 +554,38 @@ ZAPIS_RUCHU_GRACZ_2
     BTFSC   0x53, 6
     BSF	    0x3A, 6
     BTFSC   0x53, 7
-    BSF	    0x3A, 7    
+    BSF	    0x3A, 7
     
     MOVF    0x3A, W
     MOVWF   INDF
+
+    ; Wyczyszczanie flagi trafienia po ostatnim graczu
+    BCF	    0x3C, 0 
+    ; Sprawdzanie czy gracz 2 trafi? gracza 1
+    BTFSC   0x52, 0
+    MOVF    0x20, W
+    BTFSC   0x52, 1
+    MOVF    0x21, W
+    BTFSC   0x52, 2
+    MOVF    0x22, W
+    BTFSC   0x52, 3
+    MOVF    0x23, W
+    BTFSC   0x52, 4
+    MOVF    0x24, W
+    BTFSC   0x52, 5
+    MOVF    0x25, W
+    BTFSC   0x52, 6
+    MOVF    0x26, W
+    BTFSC   0x52, 7
+    MOVF    0x27, W
+    
+    ; Logiczne and pozycji statku ze strza?em
+    ANDWF   0x53, 0
+    ; Bit Z z rejestru status:
+    ; Z = 1 , The result of an arithmetic or logic operation is zero
+    ; Z = 0 , The result of an arithmetic or logic operation is not zero
+    BTFSS   STATUS, Z ; Bit Test f, Skip if Set, je?li Z = 1 skipuje.
+    BSF	    0x3C, 0; Ustawienie flagi trafienia.
     
 ;   ZMIANA NA NEXT GRACZA
     BCF	    0x2A, 0
@@ -549,6 +766,26 @@ DISPLAY_VALUE_LOOP
     goto DISPLAY_VALUE_LOOP
     call LOAD_PULSE
     return
+    
+;================ Funkcja Czekaj =======================
+CZEKAJ
+    movlw 0xff
+    movwf 0x2E
+    decfsz 0x2D, 1
+    goto CZEKAJ1
+    return
+CZEKAJ1
+    movlw 0xff
+    movwf 0x2F
+    decfsz 0x2E, 1
+    goto CZEKAJ2
+    goto CZEKAJ
+CZEKAJ2
+    decfsz 0x2F
+    goto CZEKAJ2
+    goto CZEKAJ1
+
+    
     
     
     end
