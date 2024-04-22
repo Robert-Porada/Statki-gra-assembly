@@ -1,4 +1,4 @@
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  1
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -44,8 +44,8 @@ Warning[205]: Found directive in column 1. (__CONFIG)
                       00026 ;   0x2D 0x2E, 0x2F --> funkcja czekaj
                       00027 ;
                       00028 ;   DANE O GRZE - BOARD STATE ZAPISUJEMY W BANKU 00
-0000   1303           00029     bcf STATUS, RP1
-0001   1283           00030     bcf STATUS, RP0
+0000   1303           00029     BCF     STATUS, RP1
+0001   1283           00030     BCF     STATUS, RP0
                       00031 ;   Reprezentacja board state gracza pierwszego
                       00032 ;   Statki do rozlozenia:
                       00033 ;   1 statek 4x1
@@ -57,7 +57,7 @@ Warning[205]: Found directive in column 1. (__CONFIG)
                       00039 ;   Poczatkowy board state pierwszego gracza:
 0002   3000           00040     movlw   b'00000000'
 0003   00A0           00041     movwf   0x20
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  2
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -78,7 +78,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0010   3000           00054     movlw   b'00000000'
 0011   00A7           00055     movwf   0x27
                       00056 ; 
-                      00057 ;    Pocz?tkowy board state drugiego gracza:
+                      00057 ;   Poczatkowy board state drugiego gracza:
 0012   3060           00058     movlw   b'01100000'
 0013   00A8           00059     movwf   0x28
 0014   3000           00060     movlw   b'00000000'
@@ -96,7 +96,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0020   3000           00072     movlw   b'00000000'
 0021   00B5           00073     movwf   0x35
                       00074 ;    
-                      00075 ;    Pocz?tkowe strza?y pierwszego gracza:
+                      00075 ;   Poczatkowe strzaly pierwszego gracza:
 0022   3000           00076     movlw   b'00000000'
 0023   00B6           00077     movwf   0x36
 0024   3000           00078     movlw   b'00000000'
@@ -114,9 +114,9 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0030   3000           00090     movlw   b'00000000'
 0031   00C3           00091     movwf   0x43
                       00092 ;    
-                      00093 ;    Pocz?tkowe strza?y drugiego gracza:
+                      00093 ;   Poczatkowe strzaly drugiego gracza:
 0032   3000           00094     movlw   b'00000000'
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  3
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -138,773 +138,766 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0040   3000           00108     movlw   b'00000000'
 0041   00D1           00109     movwf   0x51
                       00110     
-                      00111 ;    DANE ODNO?NIE TURY GRACZA
-                      00112 ;    JE?LI 0x2A = 0 gracz 1
-                      00113 ;    JE?LI 0x2A = 1 gracz 2
-0042   3000           00114     movlw   0x00
-0043   00AA           00115     movwf   0x2A
+                      00111 ;   DANE ODNO?NIE TURY GRACZA
+                      00112 ;   JESLI 0x2A = 0 gracz 1
+                      00113 ;   JESLI 0x2A = 1 gracz 2
+0042   3000           00114     MOVLW   0x00
+0043   00AA           00115     MOVWF   0x2A
                       00116 
                       00117 ;   Stosowane przy sprawdzaniu ko?ca gry
 0044   30FF           00118     MOVLW   0xFF
 0045   00D4           00119     MOVWF   0x54
                       00120     
-                      00121 ;   Dane odno?nie trafienia
+                      00121 ;   Dane odnosnie trafienia
                       00122 ;   Jesli 0x3C = 0 ostatni strzal nie trafiony
                       00123 ;   Jesli 0x3C = 1 ostatni strzal trafiony
 0046   103C           00124     BCF     0x3C, 0
                       00125 
                       00126 ;   Dane odno?nie ko?ca gry
                       00127 ;   0x3C, 1     --> Flaga konca gry, dla gracza 1
-                      00128 ;                   1 - wygral, 0 - nie wygra?
+                      00128 ;                   1 - wygral, 0 - nie wygral
                       00129 ;   0x3C, 2     --> Flaga konca gry, dla gracza 2
-                      00130 ;                   1 - wygral, 0 - nie wygra?
+                      00130 ;                   1 - wygral, 0 - nie wygral
 0047   10BC           00131     BCF     0x3C, 1
 0048   113C           00132     BCF     0x3C, 2
                       00133     
-                      00134 ;   POCZ?TKOWY SETUP
-                      00135 ;   ZMIANA WEJ??/WYJ?? PORTÓW NAST?PUJE W BANKU 01
-0049   1303           00136     bcf STATUS, RP1
-004A   1683           00137     bsf STATUS, RP0
+                      00134 ;   POCZSTKOWY SETUP
+                      00135 ;   ZMIANA WEJSC/WYJSC PORTÓW NASTEPUJE W BANKU 01
+0049   1303           00136     BCF     STATUS, RP1
+004A   1683           00137     BSF     STATUS, RP0
                       00138     
-                      00139 ;   PORTA JAKO WYJ?CIA DO WY?WIETLACZA LED - u?ywam tylko bitów {0,1,2} Do wy?wietlacza mo?e by? potrzeb
-                            ne wi?cej ni? 8.
-004B   3000           00140     MOVLW   0x00
+                      00139 ;   PORTA JAKO WYJ?CIA DO WY?WIETLACZA LED - uzywam tylko bitów {0,1,2}
+                      00140 ;   Do wyswietlacza moze byc potrzebne wiecej niz 8. (?)
+004B   3000           00141     MOVLW   0x00
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-004C   0085           00141     MOVWF   TRISA
-                      00142 ;   PORTB JAKO WEJ?CIA DO KOORDYNATÓW
-004D   30FF           00143     MOVLW   0xFF
+004C   0085           00142     MOVWF   TRISA
+                      00143 ;   PORTB JAKO WEJSCIA DO KOORDYNATÓW
+004D   30FF           00144     MOVLW   0xFF
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-004E   0086           00144     MOVWF   TRISB
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  4
+004E   0086           00145     MOVWF   TRISB
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00145 ;   PORTC JAKO WEJ?CIA DO KOORDYNATÓW
-004F   30FF           00146     MOVLW   0xFF
+                      00146 ;   PORTC JAKO WEJSCIA DO KOORDYNATÓW
+004F   30FF           00147     MOVLW   0xFF
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0050   0087           00147     MOVWF   TRISC
-                      00148 ;   PORTD JAKO WYJ?CIA DO WY?WIETLACZA
-0051   3000           00149     MOVLW   0x00
+0050   0087           00148     MOVWF   TRISC
+                      00149 ;   PORTD JAKO WYJSCIA DO WY?WIETLACZA
+0051   3000           00150     MOVLW   0x00
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0052   0088           00150     MOVWF   TRISD
-                      00151     
-                      00152 ;   POWRÓT DO BANKU 00
-0053   1303           00153     bcf STATUS, RP1
-0054   1283           00154     bcf STATUS, RP0
-                      00155 
-                      00156 ;   Wlacza LED MATRIX
-0055   2???           00157     call CLOCK_TURN_ON
-                      00158 
+0052   0088           00151     MOVWF   TRISD
+                      00152     
+                      00153 ;   POWRÓT DO BANKU 00
+0053   1303           00154     BCF     STATUS, RP1
+0054   1283           00155     BCF     STATUS, RP0
+                      00156 
+                      00157 ;   Wlacza LED MATRIX
+0055   2???           00158     call CLOCK_TURN_ON
                       00159 
-0056                  00160 TURY_GRACZY
-                      00161 ;    DLA GRACZA 1
-                      00162 ;    ||
-                      00163 ;   TODO Wyswietl 'tura gracza 1' i 
-                      00164 ;   TODO Zapyraj o ruch
-0056   2???           00165     call DISPLAY_PLAYER_BOARD ; Wy?wietla na LED matrix strza?y gracza 1
-0057   2???           00166     call PRZYJMIJ_RUCH ; Przyjmuje ruch od gracza 1
-0058   2???           00167     call CZY_TRAFIL_TEKST ; TODO wy?wietla tekst 'trafiony albo nie trafiony'
-0059   2???           00168     call SPRAWDZ_CZY_GRACZ_1_WYGRAL ; Sprawdza czy gracz 1 wygra?
-005A   18BC           00169     BTFSC   0x3C, 1 ; Je?li wygra? gracz 1 to wywo?aj funkcj?
-005B   2???           00170     call WYGRAL_GRACZ_1_TEKST ; TODO wy?wietla 'wygra? gracz 1'
-                      00171 
-                      00172 ;    DLA GRACZA 2
-                      00173 ;    ||
-                      00174 ;   TODO Wyswietl 'tura gracza 2' i 
-                      00175 ;   TODO Zapyraj o ruch
-005C   2???           00176     call DISPLAY_PLAYER_BOARD ; Wy?wietla na LED matrix strza?y gracza 2
-005D   2???           00177     call PRZYJMIJ_RUCH ; Przyjmuje ruch od gracza 2
-005E   2???           00178     call CZY_TRAFIL_TEKST ; TODO wy?wietla tekst 'trafiony albo nie trafiony'
-005F   2???           00179     call SPRAWDZ_CZY_GRACZ_2_WYGRAL ; Sprawdza czy gracz 2 wygra?
-0060   193C           00180     BTFSC   0x3C, 2 ; Je?li wygra? gracz 2 to wywo?aj funkcj?
-0061   2???           00181     call WYGRAL_GRACZ_2_TEKST ; TODO wy?wietla 'wygra? gracz 2'
-                      00182 
-0062   2???           00183     goto TURY_GRACZY
-                      00184 
-                      00185 ;   ==============================================================
-                      00186 ;   ============================FUNKCJE===========================    
-                      00187 ;   ==============================================================
-                      00188 ;
-                      00189 ;   ================Wiadomosc o wygranej gracz 1==================
-0063                  00190 WYGRAL_GRACZ_1_TEKST
-                      00191     
-0063   30FF           00192     MOVLW   0xFF ; ZAPALA WSZYSTKIE LAMPKI PORTD 
-0064   0088           00193     MOVWF   PORTD
-0065   2???           00194     goto $ ; KO?CZY PROGRAM
-0066   0008           00195     return
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  5
+                      00160 ;   G?ówna p?tla rozgrywki
+0056                  00161 TURY_GRACZY
+                      00162 ;   DLA GRACZA 1
+                      00163 ;    ||
+                      00164 ;   TODO Wyswietl 'tura gracza 1' i 
+                      00165 ;   TODO Zapyraj o ruch
+0056   2???           00166     call DISPLAY_PLAYER_BOARD ; Wy?wietla na LED matrix strza?y gracza 1
+0057   2???           00167     call PRZYJMIJ_RUCH ; Przyjmuje ruch od gracza 1
+0058   2???           00168     call CZY_TRAFIL_TEKST ; TODO wy?wietla tekst 'trafiony albo nie trafiony'
+0059   2???           00169     call SPRAWDZ_CZY_GRACZ_1_WYGRAL ; Sprawdza czy gracz 1 wygra?
+005A   18BC           00170     BTFSC   0x3C, 1 ; Je?li wygra? gracz 1 to wywo?aj funkcj?
+005B   2???           00171     call WYGRAL_GRACZ_1_TEKST ; TODO wy?wietla 'wygra? gracz 1'
+                      00172 
+                      00173 ;   DLA GRACZA 2
+                      00174 ;    ||
+                      00175 ;   TODO Wyswietl 'tura gracza 2' i 
+                      00176 ;   TODO Zapyraj o ruch
+005C   2???           00177     call DISPLAY_PLAYER_BOARD ; Wy?wietla na LED matrix strza?y gracza 2
+005D   2???           00178     call PRZYJMIJ_RUCH ; Przyjmuje ruch od gracza 2
+005E   2???           00179     call CZY_TRAFIL_TEKST ; TODO wy?wietla tekst 'trafiony albo nie trafiony'
+005F   2???           00180     call SPRAWDZ_CZY_GRACZ_2_WYGRAL ; Sprawdza czy gracz 2 wygra?
+0060   193C           00181     BTFSC   0x3C, 2 ; Je?li wygra? gracz 2 to wywo?aj funkcj?
+0061   2???           00182     call WYGRAL_GRACZ_2_TEKST ; TODO wy?wietla 'wygra? gracz 2'
+                      00183 
+0062   2???           00184     goto TURY_GRACZY
+                      00185 
+                      00186 ;   ==============================================================
+                      00187 ;   ============================FUNKCJE===========================    
+                      00188 ;   ==============================================================
+                      00189 ;
+                      00190 ;   ================Wiadomosc o wygranej gracz 1==================
+0063                  00191 WYGRAL_GRACZ_1_TEKST
+                      00192     ; DO PODMIANY NA TEKST WY?WIETLACZA
+0063   30FF           00193     MOVLW   0xFF ; ZAPALA WSZYSTKIE LAMPKI PORTD 
+0064   0088           00194     MOVWF   PORTD
+0065   2???           00195     goto $ ; KO?CZY PROGRAM
+0066   0008           00196     return
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00196 ;
-                      00197 ;   =================sprawdz czy gracz 1 wygral===================
-0067                  00198 SPRAWDZ_CZY_GRACZ_1_WYGRAL
-                      00199 ; Wst?pnie ustawiona na tak, je?li obleje który?
-                      00200 ; z warunków b?dzie ustawiona na 0
-0067   14BC           00201     BSF     0x3C, 1
-                      00202     
-                      00203 ; Procedura sprawdzania polega na implikacji a => b
-                      00204 ; Gdzie 'a' to pozycje statków, a 'b' to strza?y 
-0068   0928           00205     COMF    0x28, 0 ; statki gracza 2 w pierwszym wierszu
-0069   0436           00206     IORWF   0x36, 0 ; strza?y gracza 1 w pierwszym wierszu
-006A   0254           00207     SUBWF   0x54, 0
-006B   1D03           00208     BTFSS   STATUS, Z ; Je?li Z = 1 to nie wykonyje linijki ni?ej
-006C   10BC           00209     BCF     0x3C, 1 ; Je?li Z = 0 to warunek nie spe?niony
-                      00210 ; Powtórzone dla kolejnych 7 kolumn.
-006D   0929           00211     COMF    0x29, 0
-006E   0437           00212     IORWF   0x37, 0
-006F   0254           00213     SUBWF   0x54, 0
-0070   1D03           00214     BTFSS   STATUS, Z 
-0071   10BC           00215     BCF     0x3C, 1
-                      00216 
-0072   0930           00217     COMF    0x30, 0
-0073   0438           00218     IORWF   0x38, 0
-0074   0254           00219     SUBWF   0x54, 0
-0075   1D03           00220     BTFSS   STATUS, Z 
-0076   10BC           00221     BCF     0x3C, 1
-                      00222 
-0077   0931           00223     COMF    0x31, 0
-0078   0439           00224     IORWF   0x39, 0
-0079   0254           00225     SUBWF   0x54, 0
-007A   1D03           00226     BTFSS   STATUS, Z 
-007B   10BC           00227     BCF     0x3C, 1
-                      00228 
-007C   0932           00229     COMF    0x32, 0
-007D   0440           00230     IORWF   0x40, 0
-007E   0254           00231     SUBWF   0x54, 0
-007F   1D03           00232     BTFSS   STATUS, Z 
-0080   10BC           00233     BCF     0x3C, 1
-                      00234 
-0081   0933           00235     COMF    0x33, 0
-0082   0441           00236     IORWF   0x41, 0
-0083   0254           00237     SUBWF   0x54, 0
-0084   1D03           00238     BTFSS   STATUS, Z 
-0085   10BC           00239     BCF     0x3C, 1
-                      00240 
-0086   0934           00241     COMF    0x34, 0
-0087   0442           00242     IORWF   0x42, 0
-0088   0254           00243     SUBWF   0x54, 0
-0089   1D03           00244     BTFSS   STATUS, Z 
-008A   10BC           00245     BCF     0x3C, 1
-                      00246 
-008B   0935           00247     COMF    0x35, 0
-008C   0443           00248     IORWF   0x43, 0
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  6
+                      00197 ;
+                      00198 ;   =================sprawdz czy gracz 1 wygral===================
+0067                  00199 SPRAWDZ_CZY_GRACZ_1_WYGRAL
+                      00200 ; Wst?pnie ustawiona na tak, je?li obleje który?
+                      00201 ; z warunków b?dzie ustawiona na 0
+0067   14BC           00202     BSF     0x3C, 1
+                      00203     
+                      00204 ; Procedura sprawdzania polega na implikacji a => b
+                      00205 ; Gdzie 'a' to pozycje statków, a 'b' to strza?y 
+0068   0928           00206     COMF    0x28, 0 ; statki gracza 2 w pierwszym wierszu
+0069   0436           00207     IORWF   0x36, 0 ; strza?y gracza 1 w pierwszym wierszu
+006A   0254           00208     SUBWF   0x54, 0
+006B   1D03           00209     BTFSS   STATUS, Z ; Je?li Z = 1 to nie wykonyje linijki ni?ej
+006C   10BC           00210     BCF     0x3C, 1 ; Je?li Z = 0 to warunek nie spe?niony
+                      00211 ; Powtórzone dla kolejnych 7 kolumn.
+006D   0929           00212     COMF    0x29, 0
+006E   0437           00213     IORWF   0x37, 0
+006F   0254           00214     SUBWF   0x54, 0
+0070   1D03           00215     BTFSS   STATUS, Z 
+0071   10BC           00216     BCF     0x3C, 1
+                      00217 
+0072   0930           00218     COMF    0x30, 0
+0073   0438           00219     IORWF   0x38, 0
+0074   0254           00220     SUBWF   0x54, 0
+0075   1D03           00221     BTFSS   STATUS, Z 
+0076   10BC           00222     BCF     0x3C, 1
+                      00223 
+0077   0931           00224     COMF    0x31, 0
+0078   0439           00225     IORWF   0x39, 0
+0079   0254           00226     SUBWF   0x54, 0
+007A   1D03           00227     BTFSS   STATUS, Z 
+007B   10BC           00228     BCF     0x3C, 1
+                      00229 
+007C   0932           00230     COMF    0x32, 0
+007D   0440           00231     IORWF   0x40, 0
+007E   0254           00232     SUBWF   0x54, 0
+007F   1D03           00233     BTFSS   STATUS, Z 
+0080   10BC           00234     BCF     0x3C, 1
+                      00235 
+0081   0933           00236     COMF    0x33, 0
+0082   0441           00237     IORWF   0x41, 0
+0083   0254           00238     SUBWF   0x54, 0
+0084   1D03           00239     BTFSS   STATUS, Z 
+0085   10BC           00240     BCF     0x3C, 1
+                      00241 
+0086   0934           00242     COMF    0x34, 0
+0087   0442           00243     IORWF   0x42, 0
+0088   0254           00244     SUBWF   0x54, 0
+0089   1D03           00245     BTFSS   STATUS, Z 
+008A   10BC           00246     BCF     0x3C, 1
+                      00247 
+008B   0935           00248     COMF    0x35, 0
+008C   0443           00249     IORWF   0x43, 0
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-008D   0254           00249     SUBWF   0x54, 0
-008E   1D03           00250     BTFSS   STATUS, Z 
-008F   10BC           00251     BCF     0x3C, 1
-                      00252     
-0090   0008           00253     return
-                      00254 ;   ================Wiadomosc o wygranej gracz 2==================
-0091                  00255 WYGRAL_GRACZ_2_TEKST
-                      00256     
-0091   300F           00257     MOVLW   0x0F ; ZAPALA pierwsze 4 lampki portu D 
-0092   0088           00258     MOVWF   PORTD
-0093   2???           00259     goto $ ; KO?CZY PROGRAM
-0094   0008           00260     return
-                      00261 ;
-                      00262 ;   =================sprawdz czy gracz 2 wygral===================
-0095                  00263 SPRAWDZ_CZY_GRACZ_2_WYGRAL
-0095   153C           00264     BSF     0x3C, 2
-                      00265     
-0096   0920           00266     COMF    0x20, 0 ; statki gracza 1 w pierwszym wierszu
-0097   0444           00267     IORWF   0x44, 0 ; strza?y gracza 2 w pierwszym wierszu
-0098   0254           00268     SUBWF   0x54, 0
-0099   1D03           00269     BTFSS   STATUS, Z ; Je?li Z = 1 to nie wykonyje linijki ni?ej
-009A   113C           00270     BCF     0x3C, 2 ; Je?li Z = 0 to warunek nie spe?niony
-                      00271 ; Powtórzone dla kolejnych 7 kolumn.
-009B   0921           00272     COMF    0x21, 0
-009C   0445           00273     IORWF   0x45, 0
-009D   0254           00274     SUBWF   0x54, 0
-009E   1D03           00275     BTFSS   STATUS, Z 
-009F   113C           00276     BCF     0x3C, 2
-                      00277 
-00A0   0922           00278     COMF    0x22, 0
-00A1   0446           00279     IORWF   0x46, 0
-00A2   0254           00280     SUBWF   0x54, 0
-00A3   1D03           00281     BTFSS   STATUS, Z 
-00A4   113C           00282     BCF     0x3C, 2
-                      00283 
-00A5   0923           00284     COMF    0x23, 0
-00A6   0447           00285     IORWF   0x47, 0
-00A7   0254           00286     SUBWF   0x54, 0
-00A8   1D03           00287     BTFSS   STATUS, Z 
-00A9   113C           00288     BCF     0x3C, 2
-                      00289 
-00AA   0924           00290     COMF    0x24, 0
-00AB   0448           00291     IORWF   0x48, 0
-00AC   0254           00292     SUBWF   0x54, 0
-00AD   1D03           00293     BTFSS   STATUS, Z 
-00AE   113C           00294     BCF     0x3C, 2
-                      00295 
-00AF   0925           00296     COMF    0x25, 0
-00B0   0449           00297     IORWF   0x49, 0
-00B1   0254           00298     SUBWF   0x54, 0
-00B2   1D03           00299     BTFSS   STATUS, Z 
-00B3   113C           00300     BCF     0x3C, 2
-                      00301 
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  7
+008D   0254           00250     SUBWF   0x54, 0
+008E   1D03           00251     BTFSS   STATUS, Z 
+008F   10BC           00252     BCF     0x3C, 1
+                      00253     
+0090   0008           00254     return
+                      00255 ;   ================Wiadomosc o wygranej gracz 2==================
+0091                  00256 WYGRAL_GRACZ_2_TEKST
+                      00257     ; DO PODMIANY NA TEKST WY?WIETLACZA
+0091   300F           00258     MOVLW   0x0F ; ZAPALA pierwsze 4 lampki portu D 
+0092   0088           00259     MOVWF   PORTD
+0093   2???           00260     goto $ ; KO?CZY PROGRAM
+0094   0008           00261     return
+                      00262 ;
+                      00263 ;   =================sprawdz czy gracz 2 wygral===================
+0095                  00264 SPRAWDZ_CZY_GRACZ_2_WYGRAL
+0095   153C           00265     BSF     0x3C, 2
+                      00266     
+0096   0920           00267     COMF    0x20, 0 ; statki gracza 1 w pierwszym wierszu
+0097   0444           00268     IORWF   0x44, 0 ; strza?y gracza 2 w pierwszym wierszu
+0098   0254           00269     SUBWF   0x54, 0
+0099   1D03           00270     BTFSS   STATUS, Z ; Je?li Z = 1 to nie wykonyje linijki ni?ej
+009A   113C           00271     BCF     0x3C, 2 ; Je?li Z = 0 to warunek nie spe?niony
+                      00272 ; Powtórzone dla kolejnych 7 kolumn.
+009B   0921           00273     COMF    0x21, 0
+009C   0445           00274     IORWF   0x45, 0
+009D   0254           00275     SUBWF   0x54, 0
+009E   1D03           00276     BTFSS   STATUS, Z 
+009F   113C           00277     BCF     0x3C, 2
+                      00278 
+00A0   0922           00279     COMF    0x22, 0
+00A1   0446           00280     IORWF   0x46, 0
+00A2   0254           00281     SUBWF   0x54, 0
+00A3   1D03           00282     BTFSS   STATUS, Z 
+00A4   113C           00283     BCF     0x3C, 2
+                      00284 
+00A5   0923           00285     COMF    0x23, 0
+00A6   0447           00286     IORWF   0x47, 0
+00A7   0254           00287     SUBWF   0x54, 0
+00A8   1D03           00288     BTFSS   STATUS, Z 
+00A9   113C           00289     BCF     0x3C, 2
+                      00290 
+00AA   0924           00291     COMF    0x24, 0
+00AB   0448           00292     IORWF   0x48, 0
+00AC   0254           00293     SUBWF   0x54, 0
+00AD   1D03           00294     BTFSS   STATUS, Z 
+00AE   113C           00295     BCF     0x3C, 2
+                      00296 
+00AF   0925           00297     COMF    0x25, 0
+00B0   0449           00298     IORWF   0x49, 0
+00B1   0254           00299     SUBWF   0x54, 0
+00B2   1D03           00300     BTFSS   STATUS, Z 
+00B3   113C           00301     BCF     0x3C, 2
+                      00302 
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00B4   0926           00302     COMF    0x26, 0
-00B5   0450           00303     IORWF   0x50, 0
-00B6   0254           00304     SUBWF   0x54, 0
-00B7   1D03           00305     BTFSS   STATUS, Z 
-00B8   113C           00306     BCF     0x3C, 2
-                      00307 
-00B9   0927           00308     COMF    0x27, 0
-00BA   0451           00309     IORWF   0x51, 0
-00BB   0254           00310     SUBWF   0x54, 0
-00BC   1D03           00311     BTFSS   STATUS, Z 
-00BD   113C           00312     BCF     0x3C, 2
-                      00313     
-00BE   0008           00314     return
-                      00315 ;   ==================Wyswietl czy trafione=======================
-00BF                  00316 CZY_TRAFIL_TEKST
-                      00317 ; jak na razie tylko miejsce do sprawdzania czy logika flagi
-                      00318 ; trafienia dziala ale pó?niej mo?na w tym miejscu dodac 
-                      00319 ; wyswietlanie na wyswietlaczu wiadomosci
-00BF   183C           00320     BTFSC   0x3C, 0 ; skip if clear
-00C0   1605           00321     BSF     PORTA, 4; TRAFIONY!!!
-00C1   1C3C           00322     BTFSS   0x3C, 0 ; skip if set
-00C2   1685           00323     BSF     PORTA, 5; Nie trafiony 
-                      00324     
-00C3   3003           00325     MOVLW   0x03 ; Dioda zapala si? na chwil? 
-00C4   00AD           00326     MOVWF   0x2D ; Je?li trafiono dioda A4
-00C5   2???           00327     call CZEKAJ  ; Je?li nie trafiono dioda A5
-                      00328     
-00C6   1205           00329     BCF     PORTA, 4 ; Ca?a funkcja do zast?pienia 
-00C7   1285           00330     BCF     PORTA, 5 ; Wy?wietlaniem
-                      00331     
-Warning[203]: Found opcode in column 1. (return)
-00C8   0008           00332 return
-                      00333     
+00B4   0926           00303     COMF    0x26, 0
+00B5   0450           00304     IORWF   0x50, 0
+00B6   0254           00305     SUBWF   0x54, 0
+00B7   1D03           00306     BTFSS   STATUS, Z 
+00B8   113C           00307     BCF     0x3C, 2
+                      00308 
+00B9   0927           00309     COMF    0x27, 0
+00BA   0451           00310     IORWF   0x51, 0
+00BB   0254           00311     SUBWF   0x54, 0
+00BC   1D03           00312     BTFSS   STATUS, Z 
+00BD   113C           00313     BCF     0x3C, 2
+                      00314     
+00BE   0008           00315     return
+                      00316 ;   ==================Wyswietl czy trafione=======================
+00BF                  00317 CZY_TRAFIL_TEKST
+                      00318 ; jak na razie tylko miejsce do sprawdzania czy logika flagi
+                      00319 ; trafienia dziala ale pó?niej mo?na w tym miejscu dodac 
+                      00320 ; wyswietlanie na wyswietlaczu wiadomosci
+00BF   183C           00321     BTFSC   0x3C, 0 ; skip if clear
+00C0   1605           00322     BSF     PORTA, 4; TRAFIONY!!!
+00C1   1C3C           00323     BTFSS   0x3C, 0 ; skip if set
+00C2   1685           00324     BSF     PORTA, 5; Nie trafiony 
+                      00325     
+00C3   3003           00326     MOVLW   0x03 ; Dioda zapala si? na chwil? 
+00C4   00AD           00327     MOVWF   0x2D ; Je?li trafiono dioda A4
+00C5   2???           00328     call CZEKAJ  ; Je?li nie trafiono dioda A5
+                      00329     
+00C6   1205           00330     BCF     PORTA, 4 ; Ca?a funkcja do zast?pienia 
+00C7   1285           00331     BCF     PORTA, 5 ; Wy?wietlaniem
+                      00332     
+00C8   0008           00333     return
                       00334     
-                      00335     
-                      00336 ;   ================PRZYJMOWANIE RUCHU GRACZY=====================
-00C9                  00337 PRZYJMIJ_RUCH
-                      00338 ;    Wybieranie kolumny
-00C9   1806           00339     BTFSC   PORTB, 0
-00CA   1452           00340     BSF     0x52, 0
-00CB   1886           00341     BTFSC   PORTB, 1
-00CC   14D2           00342     BSF     0x52, 1
-00CD   1906           00343     BTFSC   PORTB, 2
-00CE   1552           00344     BSF     0x52, 2
-00CF   1986           00345     BTFSC   PORTB, 3
-00D0   15D2           00346     BSF     0x52, 3
-00D1   1A06           00347     BTFSC   PORTB, 4
-00D2   1652           00348     BSF     0x52, 4
-00D3   1A86           00349     BTFSC   PORTB, 5
-00D4   16D2           00350     BSF     0x52, 5
-00D5   1B06           00351     BTFSC   PORTB, 6
-00D6   1752           00352     BSF     0x52, 6
-00D7   1B86           00353     BTFSC   PORTB, 7
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  8
+                      00335 ;   ================PRZYJMOWANIE RUCHU GRACZY=====================
+00C9                  00336 PRZYJMIJ_RUCH
+                      00337 ;    Wybieranie kolumny
+00C9   1806           00338     BTFSC   PORTB, 0
+00CA   1452           00339     BSF     0x52, 0
+00CB   1886           00340     BTFSC   PORTB, 1
+00CC   14D2           00341     BSF     0x52, 1
+00CD   1906           00342     BTFSC   PORTB, 2
+00CE   1552           00343     BSF     0x52, 2
+00CF   1986           00344     BTFSC   PORTB, 3
+00D0   15D2           00345     BSF     0x52, 3
+00D1   1A06           00346     BTFSC   PORTB, 4
+00D2   1652           00347     BSF     0x52, 4
+00D3   1A86           00348     BTFSC   PORTB, 5
+00D4   16D2           00349     BSF     0x52, 5
+00D5   1B06           00350     BTFSC   PORTB, 6
+00D6   1752           00351     BSF     0x52, 6
+00D7   1B86           00352     BTFSC   PORTB, 7
+00D8   17D2           00353     BSF     0x52, 7
+                      00354 ;    JE?LI CO? ZOSTA?O KLIKNI?TE TO PRZECHODZI DO PRZYJMIJ_RUCH_WIERSZ
+                      00355 ;    JE?LI NIE TO CZEKA NA INPUT
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00D8   17D2           00354     BSF     0x52, 7
-                      00355 ;    JE?LI CO? ZOSTA?O KLIKNI?TE TO PRZECHODZI DO PRZYJMIJ_RUCH_WIERSZ
-                      00356 ;    JE?LI NIE TO CZEKA NA INPUT
-00D9   0AD2           00357     INCF    0x52, 1
-00DA   0BD2           00358     DECFSZ  0x52, 1
-00DB   2???           00359     goto PRZYJMIJ_RUCH_WIERSZ
-00DC   2???           00360     goto PRZYJMIJ_RUCH
-                      00361     
-00DD                  00362 PRZYJMIJ_RUCH_WIERSZ
-                      00363 
-00DD   1807           00364     BTFSC   PORTC, 0
-00DE   1453           00365     BSF     0x53, 0
-00DF   1887           00366     BTFSC   PORTC, 1
-00E0   14D3           00367     BSF     0x53, 1
-00E1   1907           00368     BTFSC   PORTC, 2
-00E2   1553           00369     BSF     0x53, 2
-00E3   1987           00370     BTFSC   PORTC, 3
-00E4   15D3           00371     BSF     0x53, 3
-00E5   1A07           00372     BTFSC   PORTC, 4
-00E6   1653           00373     BSF     0x53, 4
-00E7   1A87           00374     BTFSC   PORTC, 5
-00E8   16D3           00375     BSF     0x53, 5
-00E9   1B07           00376     BTFSC   PORTC, 6
-00EA   1753           00377     BSF     0x53, 6
-00EB   1B87           00378     BTFSC   PORTC, 7
-00EC   17D3           00379     BSF     0x53, 7
-                      00380 
-                      00381 ;    JE?LI CO? ZOSTA?O KLIKNI?TE TO PRZECHODZI DO ZAPISZ_RUCH_GRACZ_1
-                      00382 ;    JE?LI NIE TO CZEKA NA INPUT
-00ED   0AD3           00383     INCF    0x53, 1
-00EE   0BD3           00384     DECFSZ  0x53, 1
-00EF   2???           00385     goto ZAPISZ_RUCH_GRACZY
-00F0   2???           00386     goto PRZYJMIJ_RUCH_WIERSZ    
-                      00387     
-00F1                  00388 ZAPISZ_RUCH_GRACZY
-                      00389 
-                      00390     
-                      00391 ;    Wybieranie gracza
-00F1   1C2A           00392     BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
-00F2   2???           00393     goto    ZAPIS_RUCHU_GRACZ_1
-00F3   182A           00394     BTFSC   0x2A, 0 ;Bit Test, Skip if Clear
-00F4   2???           00395     goto    ZAPIS_RUCHU_GRACZ_2
-                      00396     
-00F5                  00397 ZAPIS_RUCHU_GRACZ_1
-                      00398 ;    ODZYSKIWANIE ADRESU KOLUMNY ZE ZMIENNEJ 0x52
-                      00399     
-00F5   1852           00400     BTFSC   0x52, 0
-00F6   3036           00401     MOVLW   0x36
-00F7   18D2           00402     BTFSC   0x52, 1
-00F8   3037           00403     MOVLW   0x37
-00F9   1952           00404     BTFSC   0x52, 2
-00FA   3038           00405     MOVLW   0x38
-00FB   19D2           00406     BTFSC   0x52, 3
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE  9
+00D9   0AD2           00356     INCF    0x52, 1
+00DA   0BD2           00357     DECFSZ  0x52, 1
+00DB   2???           00358     goto PRZYJMIJ_RUCH_WIERSZ
+00DC   2???           00359     goto PRZYJMIJ_RUCH
+                      00360     
+00DD                  00361 PRZYJMIJ_RUCH_WIERSZ
+                      00362 
+00DD   1807           00363     BTFSC   PORTC, 0
+00DE   1453           00364     BSF     0x53, 0
+00DF   1887           00365     BTFSC   PORTC, 1
+00E0   14D3           00366     BSF     0x53, 1
+00E1   1907           00367     BTFSC   PORTC, 2
+00E2   1553           00368     BSF     0x53, 2
+00E3   1987           00369     BTFSC   PORTC, 3
+00E4   15D3           00370     BSF     0x53, 3
+00E5   1A07           00371     BTFSC   PORTC, 4
+00E6   1653           00372     BSF     0x53, 4
+00E7   1A87           00373     BTFSC   PORTC, 5
+00E8   16D3           00374     BSF     0x53, 5
+00E9   1B07           00375     BTFSC   PORTC, 6
+00EA   1753           00376     BSF     0x53, 6
+00EB   1B87           00377     BTFSC   PORTC, 7
+00EC   17D3           00378     BSF     0x53, 7
+                      00379 
+                      00380 ;    JE?LI CO? ZOSTA?O KLIKNI?TE TO PRZECHODZI DO ZAPISZ_RUCH_GRACZ_1
+                      00381 ;    JE?LI NIE TO CZEKA NA INPUT
+00ED   0AD3           00382     INCF    0x53, 1
+00EE   0BD3           00383     DECFSZ  0x53, 1
+00EF   2???           00384     goto ZAPISZ_RUCH_GRACZY
+00F0   2???           00385     goto PRZYJMIJ_RUCH_WIERSZ    
+                      00386     
+00F1                  00387 ZAPISZ_RUCH_GRACZY
+                      00388     
+                      00389 ;   Wybieranie gracza
+00F1   1C2A           00390     BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
+00F2   2???           00391     goto    ZAPIS_RUCHU_GRACZ_1
+00F3   182A           00392     BTFSC   0x2A, 0 ;Bit Test, Skip if Clear
+00F4   2???           00393     goto    ZAPIS_RUCHU_GRACZ_2
+                      00394     
+00F5                  00395 ZAPIS_RUCHU_GRACZ_1
+                      00396 ;    ODZYSKIWANIE ADRESU KOLUMNY ZE ZMIENNEJ 0x52
+                      00397     
+00F5   1852           00398     BTFSC   0x52, 0
+00F6   3036           00399     MOVLW   0x36
+00F7   18D2           00400     BTFSC   0x52, 1
+00F8   3037           00401     MOVLW   0x37
+00F9   1952           00402     BTFSC   0x52, 2
+00FA   3038           00403     MOVLW   0x38
+00FB   19D2           00404     BTFSC   0x52, 3
+00FC   3039           00405     MOVLW   0x39
+00FD   1A52           00406     BTFSC   0x52, 4
+00FE   3040           00407     MOVLW   0x40
+00FF   1AD2           00408     BTFSC   0x52, 5
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00FC   3039           00407     MOVLW   0x39
-00FD   1A52           00408     BTFSC   0x52, 4
-00FE   3040           00409     MOVLW   0x40
-00FF   1AD2           00410     BTFSC   0x52, 5
-0100   3041           00411     MOVLW   0x41
-0101   1B52           00412     BTFSC   0x52, 6
-0102   3042           00413     MOVLW   0x42
-0103   1BD2           00414     BTFSC   0x52, 7
-0104   3043           00415     MOVLW   0x43
-                      00416     
-                      00417 ;    PO?REDNIA ADRESACJA, ZMIANA W MACIERZY STRZA?ÓW
-0105   0084           00418     MOVWF   FSR
-0106   1383           00419     BCF     STATUS, IRP
-                      00420     
-0107   1852           00421     BTFSC   0x52, 0
-0108   0836           00422     MOVF    0x36, W
-0109   18D2           00423     BTFSC   0x52, 1
-010A   0837           00424     MOVF    0x37, W
-010B   1952           00425     BTFSC   0x52, 2
-010C   0838           00426     MOVF    0x38, W
-010D   19D2           00427     BTFSC   0x52, 3
-010E   0839           00428     MOVF    0x39, W
-010F   1A52           00429     BTFSC   0x52, 4
-0110   0840           00430     MOVF    0x40, W
-0111   1AD2           00431     BTFSC   0x52, 5
-0112   0841           00432     MOVF    0x41, W
-0113   1B52           00433     BTFSC   0x52, 6
-0114   0842           00434     MOVF    0x42, W
-0115   1BD2           00435     BTFSC   0x52, 7
-0116   0843           00436     MOVF    0x43, W
+0100   3041           00409     MOVLW   0x41
+0101   1B52           00410     BTFSC   0x52, 6
+0102   3042           00411     MOVLW   0x42
+0103   1BD2           00412     BTFSC   0x52, 7
+0104   3043           00413     MOVLW   0x43
+                      00414     
+                      00415 ;    PO?REDNIA ADRESACJA, ZMIANA W MACIERZY STRZA?ÓW
+0105   0084           00416     MOVWF   FSR
+0106   1383           00417     BCF     STATUS, IRP
+                      00418     
+0107   1852           00419     BTFSC   0x52, 0
+0108   0836           00420     MOVF    0x36, W
+0109   18D2           00421     BTFSC   0x52, 1
+010A   0837           00422     MOVF    0x37, W
+010B   1952           00423     BTFSC   0x52, 2
+010C   0838           00424     MOVF    0x38, W
+010D   19D2           00425     BTFSC   0x52, 3
+010E   0839           00426     MOVF    0x39, W
+010F   1A52           00427     BTFSC   0x52, 4
+0110   0840           00428     MOVF    0x40, W
+0111   1AD2           00429     BTFSC   0x52, 5
+0112   0841           00430     MOVF    0x41, W
+0113   1B52           00431     BTFSC   0x52, 6
+0114   0842           00432     MOVF    0x42, W
+0115   1BD2           00433     BTFSC   0x52, 7
+0116   0843           00434     MOVF    0x43, W
+                      00435     
+0117   00BA           00436     MOVWF   0x3A
                       00437     
-0117   00BA           00438     MOVWF   0x3A
-                      00439     
-0118   1853           00440     BTFSC   0x53, 0
-0119   143A           00441     BSF     0x3A, 0
-011A   18D3           00442     BTFSC   0x53, 1
-011B   14BA           00443     BSF     0x3A, 1
-011C   1953           00444     BTFSC   0x53, 2
-011D   153A           00445     BSF     0x3A, 2
-011E   19D3           00446     BTFSC   0x53, 3
-011F   15BA           00447     BSF     0x3A, 3
-0120   1A53           00448     BTFSC   0x53, 4
-0121   163A           00449     BSF     0x3A, 4
-0122   1AD3           00450     BTFSC   0x53, 5
-0123   16BA           00451     BSF     0x3A, 5
-0124   1B53           00452     BTFSC   0x53, 6
-0125   173A           00453     BSF     0x3A, 6
-0126   1BD3           00454     BTFSC   0x53, 7
-0127   17BA           00455     BSF     0x3A, 7
-                      00456     
-0128   083A           00457     MOVF    0x3A, W
-0129   0080           00458     MOVWF   INDF
-                      00459     
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 10
+0118   1853           00438     BTFSC   0x53, 0
+0119   143A           00439     BSF     0x3A, 0
+011A   18D3           00440     BTFSC   0x53, 1
+011B   14BA           00441     BSF     0x3A, 1
+011C   1953           00442     BTFSC   0x53, 2
+011D   153A           00443     BSF     0x3A, 2
+011E   19D3           00444     BTFSC   0x53, 3
+011F   15BA           00445     BSF     0x3A, 3
+0120   1A53           00446     BTFSC   0x53, 4
+0121   163A           00447     BSF     0x3A, 4
+0122   1AD3           00448     BTFSC   0x53, 5
+0123   16BA           00449     BSF     0x3A, 5
+0124   1B53           00450     BTFSC   0x53, 6
+0125   173A           00451     BSF     0x3A, 6
+0126   1BD3           00452     BTFSC   0x53, 7
+0127   17BA           00453     BSF     0x3A, 7
+                      00454     
+0128   083A           00455     MOVF    0x3A, W
+0129   0080           00456     MOVWF   INDF
+                      00457     
+                      00458     ; Wyczyszczanie flagi trafienia po ostatnim graczu
+012A   103C           00459     BCF     0x3C, 0 
+                      00460     ; Sprawdzanie czy gracz 1 trafi? gracza 2
+012B   1852           00461     BTFSC   0x52, 0
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00460     ; Wyczyszczanie flagi trafienia po ostatnim graczu
-012A   103C           00461     BCF     0x3C, 0 
-                      00462     ; Sprawdzanie czy gracz 1 trafi? gracza 2
-012B   1852           00463     BTFSC   0x52, 0
-012C   0828           00464     MOVF    0x28, W
-012D   18D2           00465     BTFSC   0x52, 1
-012E   0829           00466     MOVF    0x29, W
-012F   1952           00467     BTFSC   0x52, 2
-0130   0830           00468     MOVF    0x30, W
-0131   19D2           00469     BTFSC   0x52, 3
-0132   0831           00470     MOVF    0x31, W
-0133   1A52           00471     BTFSC   0x52, 4
-0134   0832           00472     MOVF    0x32, W
-0135   1AD2           00473     BTFSC   0x52, 5
-0136   0833           00474     MOVF    0x33, W
-0137   1B52           00475     BTFSC   0x52, 6
-0138   0834           00476     MOVF    0x34, W
-0139   1BD2           00477     BTFSC   0x52, 7
-013A   0835           00478     MOVF    0x35, W
-                      00479     
-                      00480     ; Logiczne and pozycji statku ze strza?em
-013B   0553           00481     ANDWF   0x53, 0
-                      00482     ; Bit Z z rejestru status:
-                      00483     ; Z = 1 , The result of an arithmetic or logic operation is zero
-                      00484     ; Z = 0 , The result of an arithmetic or logic operation is not zero
-013C   1D03           00485     BTFSS   STATUS, Z ; Bit Test f, Skip if Set, je?li Z = 1 skipuje.
-013D   143C           00486     BSF     0x3C, 0; Ustawienie flagi trafienia.
-                      00487     
-                      00488     
-                      00489 ;   ZMIANA NA NEXT GRACZA
-013E   142A           00490     BSF     0x2A, 0
-                      00491 
-                      00492 ;   CZYSZCZENIE ZAWARTO?CI ADRESÓW
-013F   3000           00493     MOVLW   0x00
-0140   00D2           00494     MOVWF   0x52
-0141   3000           00495     MOVLW   0x00
-0142   00D3           00496     MOVWF   0x53
-                      00497   
-0143   0008           00498     return
-                      00499 
-0144                  00500 ZAPIS_RUCHU_GRACZ_2
-                      00501 ;    ODZYSKIWANIE ADRESU KOLUMNY ZE ZMIENNEJ 0x52
-0144   1852           00502     BTFSC   0x52, 0
-0145   3044           00503     MOVLW   0x44
-0146   18D2           00504     BTFSC   0x52, 1
-0147   3045           00505     MOVLW   0x45
-0148   1952           00506     BTFSC   0x52, 2
-0149   3046           00507     MOVLW   0x46
-014A   19D2           00508     BTFSC   0x52, 3
-014B   3047           00509     MOVLW   0x47
-014C   1A52           00510     BTFSC   0x52, 4
-014D   3048           00511     MOVLW   0x48
-014E   1AD2           00512     BTFSC   0x52, 5
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 11
+012C   0828           00462     MOVF    0x28, W
+012D   18D2           00463     BTFSC   0x52, 1
+012E   0829           00464     MOVF    0x29, W
+012F   1952           00465     BTFSC   0x52, 2
+0130   0830           00466     MOVF    0x30, W
+0131   19D2           00467     BTFSC   0x52, 3
+0132   0831           00468     MOVF    0x31, W
+0133   1A52           00469     BTFSC   0x52, 4
+0134   0832           00470     MOVF    0x32, W
+0135   1AD2           00471     BTFSC   0x52, 5
+0136   0833           00472     MOVF    0x33, W
+0137   1B52           00473     BTFSC   0x52, 6
+0138   0834           00474     MOVF    0x34, W
+0139   1BD2           00475     BTFSC   0x52, 7
+013A   0835           00476     MOVF    0x35, W
+                      00477     
+                      00478     ; Logiczne and pozycji statku ze strza?em
+013B   0553           00479     ANDWF   0x53, 0
+                      00480     ; Bit Z z rejestru status:
+                      00481     ; Z = 1 , The result of an arithmetic or logic operation is zero
+                      00482     ; Z = 0 , The result of an arithmetic or logic operation is not zero
+013C   1D03           00483     BTFSS   STATUS, Z ; Bit Test f, Skip if Set, je?li Z = 1 skipuje.
+013D   143C           00484     BSF     0x3C, 0; Ustawienie flagi trafienia.
+                      00485     
+                      00486     
+                      00487 ;   ZMIANA NA NEXT GRACZA
+013E   142A           00488     BSF     0x2A, 0
+                      00489 
+                      00490 ;   CZYSZCZENIE ZAWARTOSCI ADRESÓW
+013F   3000           00491     MOVLW   0x00
+0140   00D2           00492     MOVWF   0x52
+0141   3000           00493     MOVLW   0x00
+0142   00D3           00494     MOVWF   0x53
+                      00495   
+0143   0008           00496     return
+                      00497 
+0144                  00498 ZAPIS_RUCHU_GRACZ_2
+                      00499 ;    ODZYSKIWANIE ADRESU KOLUMNY ZE ZMIENNEJ 0x52
+0144   1852           00500     BTFSC   0x52, 0
+0145   3044           00501     MOVLW   0x44
+0146   18D2           00502     BTFSC   0x52, 1
+0147   3045           00503     MOVLW   0x45
+0148   1952           00504     BTFSC   0x52, 2
+0149   3046           00505     MOVLW   0x46
+014A   19D2           00506     BTFSC   0x52, 3
+014B   3047           00507     MOVLW   0x47
+014C   1A52           00508     BTFSC   0x52, 4
+014D   3048           00509     MOVLW   0x48
+014E   1AD2           00510     BTFSC   0x52, 5
+014F   3049           00511     MOVLW   0x49
+0150   1B52           00512     BTFSC   0x52, 6
+0151   3050           00513     MOVLW   0x50
+0152   1BD2           00514     BTFSC   0x52, 7
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 11
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-014F   3049           00513     MOVLW   0x49
-0150   1B52           00514     BTFSC   0x52, 6
-0151   3050           00515     MOVLW   0x50
-0152   1BD2           00516     BTFSC   0x52, 7
-0153   3051           00517     MOVLW   0x51
-                      00518     
-                      00519     ;    PO?REDNIA ADRESACJA, ZMIANA W MACIERZY STRZA?ÓW
-0154   0084           00520     MOVWF   FSR
-0155   1383           00521     BCF     STATUS, IRP
-                      00522     
-0156   1852           00523     BTFSC   0x52, 0
-0157   0844           00524     MOVF    0x44, W
-0158   18D2           00525     BTFSC   0x52, 1
-0159   0845           00526     MOVF    0x45, W
-015A   1952           00527     BTFSC   0x52, 2
-015B   0846           00528     MOVF    0x46, W
-015C   19D2           00529     BTFSC   0x52, 3
-015D   0847           00530     MOVF    0x47, W
-015E   1A52           00531     BTFSC   0x52, 4
-015F   0848           00532     MOVF    0x48, W
-0160   1AD2           00533     BTFSC   0x52, 5
-0161   0848           00534     MOVF    0x48, W
-0162   1B52           00535     BTFSC   0x52, 6
-0163   0850           00536     MOVF    0x50, W
-0164   1BD2           00537     BTFSC   0x52, 7
-0165   0851           00538     MOVF    0x51, W
+0153   3051           00515     MOVLW   0x51
+                      00516     
+                      00517     ;    PO?REDNIA ADRESACJA, ZMIANA W MACIERZY STRZA?ÓW
+0154   0084           00518     MOVWF   FSR
+0155   1383           00519     BCF     STATUS, IRP
+                      00520     
+0156   1852           00521     BTFSC   0x52, 0
+0157   0844           00522     MOVF    0x44, W
+0158   18D2           00523     BTFSC   0x52, 1
+0159   0845           00524     MOVF    0x45, W
+015A   1952           00525     BTFSC   0x52, 2
+015B   0846           00526     MOVF    0x46, W
+015C   19D2           00527     BTFSC   0x52, 3
+015D   0847           00528     MOVF    0x47, W
+015E   1A52           00529     BTFSC   0x52, 4
+015F   0848           00530     MOVF    0x48, W
+0160   1AD2           00531     BTFSC   0x52, 5
+0161   0848           00532     MOVF    0x48, W
+0162   1B52           00533     BTFSC   0x52, 6
+0163   0850           00534     MOVF    0x50, W
+0164   1BD2           00535     BTFSC   0x52, 7
+0165   0851           00536     MOVF    0x51, W
+                      00537     
+0166   00BA           00538     MOVWF   0x3A
                       00539     
-0166   00BA           00540     MOVWF   0x3A
-                      00541     
-0167   1853           00542     BTFSC   0x53, 0
-0168   143A           00543     BSF     0x3A, 0
-0169   18D3           00544     BTFSC   0x53, 1
-016A   14BA           00545     BSF     0x3A, 1
-016B   1953           00546     BTFSC   0x53, 2
-016C   153A           00547     BSF     0x3A, 2
-016D   19D3           00548     BTFSC   0x53, 3
-016E   15BA           00549     BSF     0x3A, 3
-016F   1A53           00550     BTFSC   0x53, 4
-0170   163A           00551     BSF     0x3A, 4
-0171   1AD3           00552     BTFSC   0x53, 5
-0172   16BA           00553     BSF     0x3A, 5
-0173   1B53           00554     BTFSC   0x53, 6
-0174   173A           00555     BSF     0x3A, 6
-0175   1BD3           00556     BTFSC   0x53, 7
-0176   17BA           00557     BSF     0x3A, 7
-                      00558     
-0177   083A           00559     MOVF    0x3A, W
-0178   0080           00560     MOVWF   INDF
-                      00561 
-                      00562     ; Wyczyszczanie flagi trafienia po ostatnim graczu
-0179   103C           00563     BCF     0x3C, 0 
-                      00564     ; Sprawdzanie czy gracz 2 trafi? gracza 1
-017A   1852           00565     BTFSC   0x52, 0
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 12
+0167   1853           00540     BTFSC   0x53, 0
+0168   143A           00541     BSF     0x3A, 0
+0169   18D3           00542     BTFSC   0x53, 1
+016A   14BA           00543     BSF     0x3A, 1
+016B   1953           00544     BTFSC   0x53, 2
+016C   153A           00545     BSF     0x3A, 2
+016D   19D3           00546     BTFSC   0x53, 3
+016E   15BA           00547     BSF     0x3A, 3
+016F   1A53           00548     BTFSC   0x53, 4
+0170   163A           00549     BSF     0x3A, 4
+0171   1AD3           00550     BTFSC   0x53, 5
+0172   16BA           00551     BSF     0x3A, 5
+0173   1B53           00552     BTFSC   0x53, 6
+0174   173A           00553     BSF     0x3A, 6
+0175   1BD3           00554     BTFSC   0x53, 7
+0176   17BA           00555     BSF     0x3A, 7
+                      00556     
+0177   083A           00557     MOVF    0x3A, W
+0178   0080           00558     MOVWF   INDF
+                      00559 
+                      00560     ; Wyczyszczanie flagi trafienia po ostatnim graczu
+0179   103C           00561     BCF     0x3C, 0 
+                      00562     ; Sprawdzanie czy gracz 2 trafi? gracza 1
+017A   1852           00563     BTFSC   0x52, 0
+017B   0820           00564     MOVF    0x20, W
+017C   18D2           00565     BTFSC   0x52, 1
+017D   0821           00566     MOVF    0x21, W
+017E   1952           00567     BTFSC   0x52, 2
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 12
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-017B   0820           00566     MOVF    0x20, W
-017C   18D2           00567     BTFSC   0x52, 1
-017D   0821           00568     MOVF    0x21, W
-017E   1952           00569     BTFSC   0x52, 2
-017F   0822           00570     MOVF    0x22, W
-0180   19D2           00571     BTFSC   0x52, 3
-0181   0823           00572     MOVF    0x23, W
-0182   1A52           00573     BTFSC   0x52, 4
-0183   0824           00574     MOVF    0x24, W
-0184   1AD2           00575     BTFSC   0x52, 5
-0185   0825           00576     MOVF    0x25, W
-0186   1B52           00577     BTFSC   0x52, 6
-0187   0826           00578     MOVF    0x26, W
-0188   1BD2           00579     BTFSC   0x52, 7
-0189   0827           00580     MOVF    0x27, W
-                      00581     
-                      00582     ; Logiczne and pozycji statku ze strza?em
-018A   0553           00583     ANDWF   0x53, 0
-                      00584     ; Bit Z z rejestru status:
-                      00585     ; Z = 1 , The result of an arithmetic or logic operation is zero
-                      00586     ; Z = 0 , The result of an arithmetic or logic operation is not zero
-018B   1D03           00587     BTFSS   STATUS, Z ; Bit Test f, Skip if Set, je?li Z = 1 skipuje.
-018C   143C           00588     BSF     0x3C, 0; Ustawienie flagi trafienia.
-                      00589     
-                      00590 ;   ZMIANA NA NEXT GRACZA
-018D   102A           00591     BCF     0x2A, 0
-                      00592     
-                      00593 ;   CZYSZCZENIE ZAWARTO?CI ADRESÓW
-018E   3000           00594     MOVLW   0x00
-018F   00D2           00595     MOVWF   0x52
-0190   3000           00596     MOVLW   0x00
-0191   00D3           00597     MOVWF   0x53
+017F   0822           00568     MOVF    0x22, W
+0180   19D2           00569     BTFSC   0x52, 3
+0181   0823           00570     MOVF    0x23, W
+0182   1A52           00571     BTFSC   0x52, 4
+0183   0824           00572     MOVF    0x24, W
+0184   1AD2           00573     BTFSC   0x52, 5
+0185   0825           00574     MOVF    0x25, W
+0186   1B52           00575     BTFSC   0x52, 6
+0187   0826           00576     MOVF    0x26, W
+0188   1BD2           00577     BTFSC   0x52, 7
+0189   0827           00578     MOVF    0x27, W
+                      00579     
+                      00580     ; Logiczne and pozycji statku ze strza?em
+018A   0553           00581     ANDWF   0x53, 0
+                      00582     ; Bit Z z rejestru status:
+                      00583     ; Z = 1 , The result of an arithmetic or logic operation is zero
+                      00584     ; Z = 0 , The result of an arithmetic or logic operation is not zero
+018B   1D03           00585     BTFSS   STATUS, Z ; Bit Test f, Skip if Set, je?li Z = 1 skipuje.
+018C   143C           00586     BSF     0x3C, 0; Ustawienie flagi trafienia.
+                      00587     
+                      00588 ;   ZMIANA NA NEXT GRACZA
+018D   102A           00589     BCF     0x2A, 0
+                      00590     
+                      00591 ;   CZYSZCZENIE ZAWARTOSCI ADRESÓW
+018E   3000           00592     MOVLW   0x00
+018F   00D2           00593     MOVWF   0x52
+0190   3000           00594     MOVLW   0x00
+0191   00D3           00595     MOVWF   0x53
+                      00596     
+0192   0008           00597     return
                       00598     
-0192   0008           00599     return
-                      00600     
-                      00601     
-                      00602 ;   ================ KONTROLA LED MATRIX=======================
-                      00603 ;   WYKONUJE PULS ZEGARA MULTIPLEKSERA
-0193                  00604 CLOCK_PULSE
-0193   1505           00605     BSF     PORTA, 2
-0194   1105           00606     BCF     PORTA, 2
-0195   0008           00607     return
-                      00608 
-                      00609 ;   WYKONUJE PULS PINU LOAD, WYSYLA ZAPISANE BITY DO WY?WIETLACZA
-0196                  00610 LOAD_PULSE
-0196   1485           00611     BSF     PORTA, 1
-0197   1085           00612     BCF     PORTA, 1
-0198   0008           00613     return
-                      00614     
-                      00615 ; NAJCZARNIEJSZA MAGIA
-0199                  00616 CLOCK_TURN_ON
-                      00617 ;   TURN ON LED MATRIX - ADRES
-0199   1005           00618     BCF     PORTA, 0
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 13
+                      00599     
+                      00600 ;   ================ KONTROLA LED MATRIX=======================
+                      00601 ;   WYKONUJE PULS ZEGARA MULTIPLEKSERA
+0193                  00602 CLOCK_PULSE
+0193   1505           00603     BSF     PORTA, 2
+0194   1105           00604     BCF     PORTA, 2
+0195   0008           00605     return
+                      00606 
+                      00607 ;   WYKONUJE PULS PINU LOAD, WYSYLA ZAPISANE BITY DO WY?WIETLACZA
+0196                  00608 LOAD_PULSE
+0196   1485           00609     BSF     PORTA, 1
+0197   1085           00610     BCF     PORTA, 1
+0198   0008           00611     return
+                      00612     
+                      00613 ; NAJCZARNIEJSZA MAGIA
+0199                  00614 CLOCK_TURN_ON
+                      00615 ;   TURN ON LED MATRIX - ADRES
+0199   1005           00616     BCF     PORTA, 0
+019A   2???           00617     call CLOCK_PULSE
+019B   2???           00618     call CLOCK_PULSE
+019C   2???           00619     call CLOCK_PULSE
+019D   2???           00620     call CLOCK_PULSE
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 13
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-019A   2???           00619     call CLOCK_PULSE
-019B   2???           00620     call CLOCK_PULSE
-019C   2???           00621     call CLOCK_PULSE
-019D   2???           00622     call CLOCK_PULSE
-019E   1405           00623     BSF     PORTA, 0
-019F   2???           00624     call CLOCK_PULSE
-01A0   2???           00625     call CLOCK_PULSE
-01A1   1005           00626     BCF     PORTA, 0
-01A2   2???           00627     call CLOCK_PULSE
-01A3   2???           00628     call CLOCK_PULSE
-                      00629 ;   TURN ON LED MATRIX - DATA
-01A4   2???           00630     call CLOCK_PULSE
-01A5   2???           00631     call CLOCK_PULSE
-01A6   2???           00632     call CLOCK_PULSE
-01A7   2???           00633     call CLOCK_PULSE
-01A8   2???           00634     call CLOCK_PULSE
-01A9   2???           00635     call CLOCK_PULSE
-01AA   2???           00636     call CLOCK_PULSE
-01AB   1405           00637     BSF     PORTA, 0
-01AC   2???           00638     call CLOCK_PULSE
-01AD   2???           00639     call LOAD_PULSE
-01AE   0008           00640     return    
-                      00641 
-                      00642 
-01AF                  00643 DISPLAY_PLAYER_BOARD
-                      00644 ;    Wybieranie gracza
-01AF   1C2A           00645     BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
-01B0   2???           00646     goto    DISPLAY_PLAYER_BOARD_PLAYER_1
-01B1   2???           00647     goto    DISPLAY_PLAYER_BOARD_PLAYER_2    
-                      00648     
-                      00649     
-01B2                  00650 DISPLAY_PLAYER_BOARD_PLAYER_1
-01B2   3001           00651     MOVLW   0x01
-01B3   00AB           00652     MOVWF   0x2B
-01B4   0836           00653     MOVF 0x36, W
-01B5   00AC           00654     MOVWF   0x2C
-01B6   2???           00655     call DISPLAY_ON_MATRIX_ROW_DATA
-01B7   3002           00656     MOVLW   0x02
-01B8   00AB           00657     MOVWF   0x2B
-01B9   0837           00658     MOVF 0x37, W
-01BA   00AC           00659     MOVWF   0x2C
-01BB   2???           00660     call DISPLAY_ON_MATRIX_ROW_DATA
-01BC   3003           00661     MOVLW   0x03
-01BD   00AB           00662     MOVWF   0x2B
-01BE   0838           00663     MOVF 0x38, W
-01BF   00AC           00664     MOVWF   0x2C
-01C0   2???           00665     call DISPLAY_ON_MATRIX_ROW_DATA
-01C1   3004           00666     MOVLW   0x04
-01C2   00AB           00667     MOVWF   0x2B
-01C3   0839           00668     MOVF 0x39, W
-01C4   00AC           00669     MOVWF   0x2C
-01C5   2???           00670     call DISPLAY_ON_MATRIX_ROW_DATA
-01C6   3005           00671     MOVLW   0x05
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 14
+019E   1405           00621     BSF     PORTA, 0
+019F   2???           00622     call CLOCK_PULSE
+01A0   2???           00623     call CLOCK_PULSE
+01A1   1005           00624     BCF     PORTA, 0
+01A2   2???           00625     call CLOCK_PULSE
+01A3   2???           00626     call CLOCK_PULSE
+                      00627 ;   TURN ON LED MATRIX - DATA
+01A4   2???           00628     call CLOCK_PULSE
+01A5   2???           00629     call CLOCK_PULSE
+01A6   2???           00630     call CLOCK_PULSE
+01A7   2???           00631     call CLOCK_PULSE
+01A8   2???           00632     call CLOCK_PULSE
+01A9   2???           00633     call CLOCK_PULSE
+01AA   2???           00634     call CLOCK_PULSE
+01AB   1405           00635     BSF     PORTA, 0
+01AC   2???           00636     call CLOCK_PULSE
+01AD   2???           00637     call LOAD_PULSE
+01AE   0008           00638     return    
+                      00639 
+                      00640 
+01AF                  00641 DISPLAY_PLAYER_BOARD
+                      00642 ;    Wybieranie gracza
+01AF   1C2A           00643     BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
+01B0   2???           00644     goto    DISPLAY_PLAYER_BOARD_PLAYER_1
+01B1   2???           00645     goto    DISPLAY_PLAYER_BOARD_PLAYER_2    
+                      00646     
+                      00647     
+01B2                  00648 DISPLAY_PLAYER_BOARD_PLAYER_1
+01B2   3001           00649     MOVLW   0x01
+01B3   00AB           00650     MOVWF   0x2B
+01B4   0836           00651     MOVF    0x36, W
+01B5   00AC           00652     MOVWF   0x2C
+01B6   2???           00653     call DISPLAY_ON_MATRIX_ROW_DATA
+01B7   3002           00654     MOVLW   0x02
+01B8   00AB           00655     MOVWF   0x2B
+01B9   0837           00656     MOVF    0x37, W
+01BA   00AC           00657     MOVWF   0x2C
+01BB   2???           00658     call DISPLAY_ON_MATRIX_ROW_DATA
+01BC   3003           00659     MOVLW   0x03
+01BD   00AB           00660     MOVWF   0x2B
+01BE   0838           00661     MOVF    0x38, W
+01BF   00AC           00662     MOVWF   0x2C
+01C0   2???           00663     call DISPLAY_ON_MATRIX_ROW_DATA
+01C1   3004           00664     MOVLW   0x04
+01C2   00AB           00665     MOVWF   0x2B
+01C3   0839           00666     MOVF    0x39, W
+01C4   00AC           00667     MOVWF   0x2C
+01C5   2???           00668     call DISPLAY_ON_MATRIX_ROW_DATA
+01C6   3005           00669     MOVLW   0x05
+01C7   00AB           00670     MOVWF   0x2B
+01C8   0840           00671     MOVF    0x40, W
+01C9   00AC           00672     MOVWF   0x2C
+01CA   2???           00673     call DISPLAY_ON_MATRIX_ROW_DATA
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 14
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-01C7   00AB           00672     MOVWF   0x2B
-01C8   0840           00673     MOVF 0x40, W
-01C9   00AC           00674     MOVWF   0x2C
-01CA   2???           00675     call DISPLAY_ON_MATRIX_ROW_DATA
-01CB   3006           00676     MOVLW   0x06
-01CC   00AB           00677     MOVWF   0x2B
-01CD   0841           00678     MOVF 0x41, W
-01CE   00AC           00679     MOVWF   0x2C
-01CF   2???           00680     call DISPLAY_ON_MATRIX_ROW_DATA
-01D0   3007           00681     MOVLW   0x07
-01D1   00AB           00682     MOVWF   0x2B
-01D2   0842           00683     MOVF 0x42, W
-01D3   00AC           00684     MOVWF   0x2C
-01D4   2???           00685     call DISPLAY_ON_MATRIX_ROW_DATA
-01D5   3008           00686     MOVLW   0x08
-01D6   00AB           00687     MOVWF   0x2B
-01D7   0843           00688     MOVF 0x43, W
-01D8   00AC           00689     MOVWF   0x2C
-01D9   2???           00690     call DISPLAY_ON_MATRIX_ROW_DATA
+01CB   3006           00674     MOVLW   0x06
+01CC   00AB           00675     MOVWF   0x2B
+01CD   0841           00676     MOVF    0x41, W
+01CE   00AC           00677     MOVWF   0x2C
+01CF   2???           00678     call DISPLAY_ON_MATRIX_ROW_DATA
+01D0   3007           00679     MOVLW   0x07
+01D1   00AB           00680     MOVWF   0x2B
+01D2   0842           00681     MOVF    0x42, W
+01D3   00AC           00682     MOVWF   0x2C
+01D4   2???           00683     call DISPLAY_ON_MATRIX_ROW_DATA
+01D5   3008           00684     MOVLW   0x08
+01D6   00AB           00685     MOVWF   0x2B
+01D7   0843           00686     MOVF    0x43, W
+01D8   00AC           00687     MOVWF   0x2C
+01D9   2???           00688     call DISPLAY_ON_MATRIX_ROW_DATA
+                      00689 
+01DA   0008           00690     return
                       00691 
-01DA   0008           00692     return
-                      00693 
-01DB                  00694 DISPLAY_PLAYER_BOARD_PLAYER_2
-01DB   3001           00695     MOVLW   0x01
-01DC   00AB           00696     MOVWF   0x2B
-01DD   0844           00697     MOVF 0x44, W
-01DE   00AC           00698     MOVWF   0x2C
-01DF   2???           00699     call DISPLAY_ON_MATRIX_ROW_DATA
-01E0   3002           00700     MOVLW   0x02
-01E1   00AB           00701     MOVWF   0x2B
-01E2   0845           00702     MOVF 0x45, W
-01E3   00AC           00703     MOVWF   0x2C
-01E4   2???           00704     call DISPLAY_ON_MATRIX_ROW_DATA
-01E5   3003           00705     MOVLW   0x03
-01E6   00AB           00706     MOVWF   0x2B
-01E7   0846           00707     MOVF 0x46, W
-01E8   00AC           00708     MOVWF   0x2C
-01E9   2???           00709     call DISPLAY_ON_MATRIX_ROW_DATA
-01EA   3004           00710     MOVLW   0x04
-01EB   00AB           00711     MOVWF   0x2B
-01EC   0847           00712     MOVF 0x47, W
-01ED   00AC           00713     MOVWF   0x2C
-01EE   2???           00714     call DISPLAY_ON_MATRIX_ROW_DATA
-01EF   3005           00715     MOVLW   0x05
-01F0   00AB           00716     MOVWF   0x2B
-01F1   0848           00717     MOVF 0x48, W
-01F2   00AC           00718     MOVWF   0x2C
-01F3   2???           00719     call DISPLAY_ON_MATRIX_ROW_DATA
-01F4   3006           00720     MOVLW   0x06
-01F5   00AB           00721     MOVWF   0x2B
-01F6   0849           00722     MOVF 0x49, W
-01F7   00AC           00723     MOVWF   0x2C
-01F8   2???           00724     call DISPLAY_ON_MATRIX_ROW_DATA
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 15
+01DB                  00692 DISPLAY_PLAYER_BOARD_PLAYER_2
+01DB   3001           00693     MOVLW   0x01
+01DC   00AB           00694     MOVWF   0x2B
+01DD   0844           00695     MOVF    0x44, W
+01DE   00AC           00696     MOVWF   0x2C
+01DF   2???           00697     call DISPLAY_ON_MATRIX_ROW_DATA
+01E0   3002           00698     MOVLW   0x02
+01E1   00AB           00699     MOVWF   0x2B
+01E2   0845           00700     MOVF    0x45, W
+01E3   00AC           00701     MOVWF   0x2C
+01E4   2???           00702     call DISPLAY_ON_MATRIX_ROW_DATA
+01E5   3003           00703     MOVLW   0x03
+01E6   00AB           00704     MOVWF   0x2B
+01E7   0846           00705     MOVF    0x46, W
+01E8   00AC           00706     MOVWF   0x2C
+01E9   2???           00707     call DISPLAY_ON_MATRIX_ROW_DATA
+01EA   3004           00708     MOVLW   0x04
+01EB   00AB           00709     MOVWF   0x2B
+01EC   0847           00710     MOVF    0x47, W
+01ED   00AC           00711     MOVWF   0x2C
+01EE   2???           00712     call DISPLAY_ON_MATRIX_ROW_DATA
+01EF   3005           00713     MOVLW   0x05
+01F0   00AB           00714     MOVWF   0x2B
+01F1   0848           00715     MOVF    0x48, W
+01F2   00AC           00716     MOVWF   0x2C
+01F3   2???           00717     call DISPLAY_ON_MATRIX_ROW_DATA
+01F4   3006           00718     MOVLW   0x06
+01F5   00AB           00719     MOVWF   0x2B
+01F6   0849           00720     MOVF    0x49, W
+01F7   00AC           00721     MOVWF   0x2C
+01F8   2???           00722     call DISPLAY_ON_MATRIX_ROW_DATA
+01F9   3007           00723     MOVLW   0x07
+01FA   00AB           00724     MOVWF   0x2B
+01FB   0850           00725     MOVF    0x50, W
+01FC   00AC           00726     MOVWF   0x2C
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 15
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-01F9   3007           00725     MOVLW   0x07
-01FA   00AB           00726     MOVWF   0x2B
-01FB   0850           00727     MOVF 0x50, W
-01FC   00AC           00728     MOVWF   0x2C
-01FD   2???           00729     call DISPLAY_ON_MATRIX_ROW_DATA
-01FE   3008           00730     MOVLW   0x08
-01FF   00AB           00731     MOVWF   0x2B
-0200   0851           00732     MOVF 0x51, W
-0201   00AC           00733     MOVWF   0x2C
-0202   2???           00734     call DISPLAY_ON_MATRIX_ROW_DATA
-                      00735 
-0203   0008           00736     return    
-                      00737     
-0204                  00738 DISPLAY_ON_MATRIX_ROW_DATA
-0204   1005           00739     BCF     PORTA, 0
-0205   3008           00740     MOVLW   0x08
-0206   00BB           00741     MOVWF   0x3B   
-0207                  00742 DISPLAY_ADRESS_LOOP
-0207   1BAB           00743     BTFSC   0x2B, 7 ;bit test skip if clear
-0208   1405           00744     BSF     PORTA, 0
-0209   2???           00745     call    CLOCK_PULSE
-020A   1005           00746     BCF     PORTA, 0
-020B   1003           00747     BCF     STATUS, C
-020C   0DAB           00748     RLF     0x2B, 1
-                      00749     
-020D   0BBB           00750     DECFSZ  0x3B, 1
-020E   2???           00751     goto DISPLAY_ADRESS_LOOP
-                      00752 
-                      00753     
-020F   3008           00754     MOVLW   0x08
-0210   00BB           00755     MOVWF   0x3B
-0211                  00756 DISPLAY_VALUE_LOOP
-0211   1005           00757     BCF     PORTA, 0
-0212   1BAC           00758     BTFSC   0x2C, 7 ;bit test skip if clear
-0213   1405           00759     BSF     PORTA, 0
-0214   2???           00760     call    CLOCK_PULSE
-0215   1005           00761     BCF     PORTA, 0
-0216   1003           00762     BCF     STATUS, C
-0217   0DAC           00763     RLF     0x2C, 1
-                      00764     
-0218   0BBB           00765     DECFSZ  0x3B, 1
-0219   2???           00766     goto DISPLAY_VALUE_LOOP
-021A   2???           00767     call LOAD_PULSE
-021B   0008           00768     return
-                      00769     
-                      00770 ;================ Funkcja Czekaj =======================
-021C                  00771 CZEKAJ
-021C   30FF           00772     movlw 0xff
-021D   00AE           00773     movwf 0x2E
-021E   0BAD           00774     decfsz 0x2D, 1
-021F   2???           00775     goto CZEKAJ1
-0220   0008           00776     return
-0221                  00777 CZEKAJ1
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 16
+01FD   2???           00727     call DISPLAY_ON_MATRIX_ROW_DATA
+01FE   3008           00728     MOVLW   0x08
+01FF   00AB           00729     MOVWF   0x2B
+0200   0851           00730     MOVF    0x51, W
+0201   00AC           00731     MOVWF   0x2C
+0202   2???           00732     call DISPLAY_ON_MATRIX_ROW_DATA
+                      00733 
+0203   0008           00734     return    
+                      00735     
+0204                  00736 DISPLAY_ON_MATRIX_ROW_DATA
+0204   1005           00737     BCF     PORTA, 0
+0205   3008           00738     MOVLW   0x08
+0206   00BB           00739     MOVWF   0x3B   
+0207                  00740 DISPLAY_ADRESS_LOOP
+0207   1BAB           00741     BTFSC   0x2B, 7 ;bit test skip if clear
+0208   1405           00742     BSF     PORTA, 0
+0209   2???           00743     call    CLOCK_PULSE
+020A   1005           00744     BCF     PORTA, 0
+020B   1003           00745     BCF     STATUS, C
+020C   0DAB           00746     RLF     0x2B, 1
+                      00747     
+020D   0BBB           00748     DECFSZ  0x3B, 1
+020E   2???           00749     goto DISPLAY_ADRESS_LOOP
+                      00750 
+                      00751     
+020F   3008           00752     MOVLW   0x08
+0210   00BB           00753     MOVWF   0x3B
+0211                  00754 DISPLAY_VALUE_LOOP
+0211   1005           00755     BCF     PORTA, 0
+0212   1BAC           00756     BTFSC   0x2C, 7 ;bit test skip if clear
+0213   1405           00757     BSF     PORTA, 0
+0214   2???           00758     call    CLOCK_PULSE
+0215   1005           00759     BCF     PORTA, 0
+0216   1003           00760     BCF     STATUS, C
+0217   0DAC           00761     RLF     0x2C, 1
+                      00762     
+0218   0BBB           00763     DECFSZ  0x3B, 1
+0219   2???           00764     goto DISPLAY_VALUE_LOOP
+021A   2???           00765     call LOAD_PULSE
+021B   0008           00766     return
+                      00767     
+                      00768 ;================ Funkcja Czekaj =======================
+021C                  00769 CZEKAJ
+021C   30FF           00770     movlw 0xff
+021D   00AE           00771     movwf 0x2E
+021E   0BAD           00772     decfsz 0x2D, 1
+021F   2???           00773     goto CZEKAJ1
+0220   0008           00774     return
+0221                  00775 CZEKAJ1
+0221   30FF           00776     movlw 0xff
+0222   00AF           00777     movwf 0x2F
+0223   0BAE           00778     decfsz 0x2E, 1
+0224   2???           00779     goto CZEKAJ2
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 16
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0221   30FF           00778     movlw 0xff
-0222   00AF           00779     movwf 0x2F
-0223   0BAE           00780     decfsz 0x2E, 1
-0224   2???           00781     goto CZEKAJ2
-0225   2???           00782     goto CZEKAJ
-0226                  00783 CZEKAJ2
+0225   2???           00780     goto CZEKAJ
+0226                  00781 CZEKAJ2
 Message[305]: Using default destination of 1 (file).
-0226   0BAF           00784     decfsz 0x2F
-0227   2???           00785     goto CZEKAJ2
-0228   2???           00786     goto CZEKAJ1
-                      00787 
-                      00788     
-                      00789     
-                      00790     
-3FBB                  00791     end
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 17
+0226   0BAF           00782     decfsz 0x2F
+0227   2???           00783     goto CZEKAJ2
+0228   2???           00784     goto CZEKAJ1
+                      00785 
+3FBB                  00786     end
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 17
 
 
 SYMBOL TABLE
@@ -963,7 +956,7 @@ CHS1                              00000004
 CHS2                              00000005
 CIS                               00000003
 CKE                               00000006
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 18
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 18
 
 
 SYMBOL TABLE
@@ -1022,7 +1015,7 @@ GO_DONE                           00000002
 GO_NOT_DONE                       00000002
 I2C_DATA                          00000005
 I2C_READ                          00000002
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 19
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 19
 
 
 SYMBOL TABLE
@@ -1081,7 +1074,7 @@ PRZYJMIJ_RUCH_WIERSZ              000000DD
 PS0                               00000000
 PS1                               00000001
 PS2                               00000002
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 20
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 20
 
 
 SYMBOL TABLE
@@ -1140,7 +1133,7 @@ READ_WRITE                        00000002
 RP0                               00000005
 RP1                               00000006
 RSEN                              00000001
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 21
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 21
 
 
 SYMBOL TABLE
@@ -1199,7 +1192,7 @@ TMR1L                             0000000E
 TMR1ON                            00000000
 TMR2                              00000011
 TMR2IE                            00000001
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 22
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 22
 
 
 SYMBOL TABLE
@@ -1258,7 +1251,7 @@ TXD8                              00000000
 TXEN                              00000005
 TXIE                              00000004
 TXIF                              00000004
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 23
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 23
 
 
 SYMBOL TABLE
@@ -1317,7 +1310,7 @@ _WRT_256                          00003DFF
 _WRT_HALF                         000039FF
 _WRT_OFF                          00003FFF
 _XT_OSC                           00003FFD
-MPASM 5.83                          MAIN.ASM   4-22-2024  2:16:47         PAGE 24
+MPASM 5.83                          MAIN.ASM   4-22-2024  2:28:08         PAGE 24
 
 
 SYMBOL TABLE
@@ -1326,7 +1319,7 @@ SYMBOL TABLE
 __16LF877A                        00000001
 
 Errors   :     0
-Warnings :     2 reported,     0 suppressed
+Warnings :     1 reported,     0 suppressed
 Messages :     6 reported,     0 suppressed
 
 

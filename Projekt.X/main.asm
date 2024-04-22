@@ -26,8 +26,8 @@ START
 ;   0x2D 0x2E, 0x2F --> funkcja czekaj
 ;
 ;   DANE O GRZE - BOARD STATE ZAPISUJEMY W BANKU 00
-    bcf STATUS, RP1
-    bcf STATUS, RP0
+    BCF	    STATUS, RP1
+    BCF	    STATUS, RP0
 ;   Reprezentacja board state gracza pierwszego
 ;   Statki do rozlozenia:
 ;   1 statek 4x1
@@ -54,7 +54,7 @@ START
     movlw   b'00000000'
     movwf   0x27
 ; 
-;    Pocz?tkowy board state drugiego gracza:
+;   Poczatkowy board state drugiego gracza:
     movlw   b'01100000'
     movwf   0x28
     movlw   b'00000000'
@@ -72,7 +72,7 @@ START
     movlw   b'00000000'
     movwf   0x35
 ;    
-;    Pocz?tkowe strza?y pierwszego gracza:
+;   Poczatkowe strzaly pierwszego gracza:
     movlw   b'00000000'
     movwf   0x36
     movlw   b'00000000'
@@ -90,7 +90,7 @@ START
     movlw   b'00000000'
     movwf   0x43
 ;    
-;    Pocz?tkowe strza?y drugiego gracza:
+;   Poczatkowe strzaly drugiego gracza:
     movlw   b'00000000'
     movwf   0x44
     movlw   b'00000000'
@@ -108,57 +108,58 @@ START
     movlw   b'00000000'
     movwf   0x51
     
-;    DANE ODNO?NIE TURY GRACZA
-;    JE?LI 0x2A = 0 gracz 1
-;    JE?LI 0x2A = 1 gracz 2
-    movlw   0x00
-    movwf   0x2A
+;   DANE ODNO?NIE TURY GRACZA
+;   JESLI 0x2A = 0 gracz 1
+;   JESLI 0x2A = 1 gracz 2
+    MOVLW   0x00
+    MOVWF   0x2A
 
 ;   Stosowane przy sprawdzaniu ko?ca gry
     MOVLW   0xFF
     MOVWF   0x54
     
-;   Dane odno?nie trafienia
+;   Dane odnosnie trafienia
 ;   Jesli 0x3C = 0 ostatni strzal nie trafiony
 ;   Jesli 0x3C = 1 ostatni strzal trafiony
     BCF	    0x3C, 0
 
 ;   Dane odno?nie ko?ca gry
 ;   0x3C, 1	--> Flaga konca gry, dla gracza 1
-;		    1 - wygral, 0 - nie wygra?
+;		    1 - wygral, 0 - nie wygral
 ;   0x3C, 2	--> Flaga konca gry, dla gracza 2
-;		    1 - wygral, 0 - nie wygra?
+;		    1 - wygral, 0 - nie wygral
     BCF	    0x3C, 1
     BCF	    0x3C, 2
     
-;   POCZ?TKOWY SETUP
-;   ZMIANA WEJ??/WYJ?? PORTÓW NAST?PUJE W BANKU 01
-    bcf STATUS, RP1
-    bsf STATUS, RP0
+;   POCZSTKOWY SETUP
+;   ZMIANA WEJSC/WYJSC PORTÓW NASTEPUJE W BANKU 01
+    BCF	    STATUS, RP1
+    BSF	    STATUS, RP0
     
-;   PORTA JAKO WYJ?CIA DO WY?WIETLACZA LED - u?ywam tylko bitów {0,1,2} Do wy?wietlacza mo?e by? potrzebne wi?cej ni? 8.
+;   PORTA JAKO WYJ?CIA DO WY?WIETLACZA LED - uzywam tylko bitów {0,1,2}
+;   Do wyswietlacza moze byc potrzebne wiecej niz 8. (?)
     MOVLW   0x00
     MOVWF   TRISA
-;   PORTB JAKO WEJ?CIA DO KOORDYNATÓW
+;   PORTB JAKO WEJSCIA DO KOORDYNATÓW
     MOVLW   0xFF
     MOVWF   TRISB
-;   PORTC JAKO WEJ?CIA DO KOORDYNATÓW
+;   PORTC JAKO WEJSCIA DO KOORDYNATÓW
     MOVLW   0xFF
     MOVWF   TRISC
-;   PORTD JAKO WYJ?CIA DO WY?WIETLACZA
+;   PORTD JAKO WYJSCIA DO WY?WIETLACZA
     MOVLW   0x00
     MOVWF   TRISD
     
 ;   POWRÓT DO BANKU 00
-    bcf STATUS, RP1
-    bcf STATUS, RP0
+    BCF	    STATUS, RP1
+    BCF	    STATUS, RP0
 
 ;   Wlacza LED MATRIX
     call CLOCK_TURN_ON
 
-
+;   G?ówna p?tla rozgrywki
 TURY_GRACZY
-;    DLA GRACZA 1
+;   DLA GRACZA 1
 ;    ||
 ;   TODO Wyswietl 'tura gracza 1' i 
 ;   TODO Zapyraj o ruch
@@ -169,7 +170,7 @@ TURY_GRACZY
     BTFSC   0x3C, 1 ; Je?li wygra? gracz 1 to wywo?aj funkcj?
     call WYGRAL_GRACZ_1_TEKST ; TODO wy?wietla 'wygra? gracz 1'
 
-;    DLA GRACZA 2
+;   DLA GRACZA 2
 ;    ||
 ;   TODO Wyswietl 'tura gracza 2' i 
 ;   TODO Zapyraj o ruch
@@ -188,7 +189,7 @@ TURY_GRACZY
 ;
 ;   ================Wiadomosc o wygranej gracz 1==================
 WYGRAL_GRACZ_1_TEKST
-    
+    ; DO PODMIANY NA TEKST WY?WIETLACZA
     MOVLW   0xFF ; ZAPALA WSZYSTKIE LAMPKI PORTD 
     MOVWF   PORTD
     goto $ ; KO?CZY PROGRAM
@@ -253,7 +254,7 @@ SPRAWDZ_CZY_GRACZ_1_WYGRAL
     return
 ;   ================Wiadomosc o wygranej gracz 2==================
 WYGRAL_GRACZ_2_TEKST
-    
+    ; DO PODMIANY NA TEKST WY?WIETLACZA
     MOVLW   0x0F ; ZAPALA pierwsze 4 lampki portu D 
     MOVWF   PORTD
     goto $ ; KO?CZY PROGRAM
@@ -329,9 +330,7 @@ CZY_TRAFIL_TEKST
     BCF	    PORTA, 4 ; Ca?a funkcja do zast?pienia 
     BCF	    PORTA, 5 ; Wy?wietlaniem
     
-return
-    
-    
+    return
     
 ;   ================PRZYJMOWANIE RUCHU GRACZY=====================
 PRZYJMIJ_RUCH
@@ -386,9 +385,8 @@ PRZYJMIJ_RUCH_WIERSZ
     goto PRZYJMIJ_RUCH_WIERSZ    
     
 ZAPISZ_RUCH_GRACZY
-
     
-;    Wybieranie gracza
+;   Wybieranie gracza
     BTFSS   0x2A, 0 ;BIT TEST SKIP IF SET
     goto    ZAPIS_RUCHU_GRACZ_1
     BTFSC   0x2A, 0 ;Bit Test, Skip if Clear
@@ -489,7 +487,7 @@ ZAPIS_RUCHU_GRACZ_1
 ;   ZMIANA NA NEXT GRACZA
     BSF	    0x2A, 0
 
-;   CZYSZCZENIE ZAWARTO?CI ADRESÓW
+;   CZYSZCZENIE ZAWARTOSCI ADRESÓW
     MOVLW   0x00
     MOVWF   0x52
     MOVLW   0x00
@@ -590,7 +588,7 @@ ZAPIS_RUCHU_GRACZ_2
 ;   ZMIANA NA NEXT GRACZA
     BCF	    0x2A, 0
     
-;   CZYSZCZENIE ZAWARTO?CI ADRESÓW
+;   CZYSZCZENIE ZAWARTOSCI ADRESÓW
     MOVLW   0x00
     MOVWF   0x52
     MOVLW   0x00
@@ -650,42 +648,42 @@ DISPLAY_PLAYER_BOARD
 DISPLAY_PLAYER_BOARD_PLAYER_1
     MOVLW   0x01
     MOVWF   0x2B
-    MOVF 0x36, W
+    MOVF    0x36, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x02
     MOVWF   0x2B
-    MOVF 0x37, W
+    MOVF    0x37, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x03
     MOVWF   0x2B
-    MOVF 0x38, W
+    MOVF    0x38, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x04
     MOVWF   0x2B
-    MOVF 0x39, W
+    MOVF    0x39, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x05
     MOVWF   0x2B
-    MOVF 0x40, W
+    MOVF    0x40, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x06
     MOVWF   0x2B
-    MOVF 0x41, W
+    MOVF    0x41, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x07
     MOVWF   0x2B
-    MOVF 0x42, W
+    MOVF    0x42, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x08
     MOVWF   0x2B
-    MOVF 0x43, W
+    MOVF    0x43, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
 
@@ -694,42 +692,42 @@ DISPLAY_PLAYER_BOARD_PLAYER_1
 DISPLAY_PLAYER_BOARD_PLAYER_2
     MOVLW   0x01
     MOVWF   0x2B
-    MOVF 0x44, W
+    MOVF    0x44, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x02
     MOVWF   0x2B
-    MOVF 0x45, W
+    MOVF    0x45, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x03
     MOVWF   0x2B
-    MOVF 0x46, W
+    MOVF    0x46, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x04
     MOVWF   0x2B
-    MOVF 0x47, W
+    MOVF    0x47, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x05
     MOVWF   0x2B
-    MOVF 0x48, W
+    MOVF    0x48, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x06
     MOVWF   0x2B
-    MOVF 0x49, W
+    MOVF    0x49, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x07
     MOVWF   0x2B
-    MOVF 0x50, W
+    MOVF    0x50, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
     MOVLW   0x08
     MOVWF   0x2B
-    MOVF 0x51, W
+    MOVF    0x51, W
     MOVWF   0x2C
     call DISPLAY_ON_MATRIX_ROW_DATA
 
@@ -785,9 +783,6 @@ CZEKAJ2
     goto CZEKAJ2
     goto CZEKAJ1
 
-    
-    
-    
     end
     
    
