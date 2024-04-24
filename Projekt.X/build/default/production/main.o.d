@@ -1,3 +1,3 @@
 build/default/production/main.o:  \
-	C:/Users/sznop/Desktop/projekty/Projekt-statki/Projekt.X/main.asm  \
+	C:/Users/rober/Desktop/Programowanie\ uni/Systemy\ autonomiczne/Projekt_git/Projekt-statki/Projekt.X/main.asm  \
 
