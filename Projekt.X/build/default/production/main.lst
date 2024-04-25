@@ -1,4 +1,4 @@
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  1
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,14 +57,14 @@ Warning[205]: Found directive in column 1. (__CONFIG)
                       00039 ;   4 statki 1x1
                       00040 ;
                       00041 ;   W celu testow, rozlozona minimalna ilosc statkow
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  2
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
                       00042 ;   Poczatkowy board state pierwszego gracza:
-0002   3080           00043     movlw   b'10000000'
+0002   30FF           00043     movlw   b'11111111'
 0003   00A0           00044     movwf   0x20
 0004   3000           00045     movlw   b'00000000'
 0005   00A1           00046     movwf   0x21
@@ -82,9 +82,9 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0011   00A7           00058     movwf   0x27
                       00059 ; 
                       00060 ;   Poczatkowy board state drugiego gracza:
-0012   3001           00061     movlw   b'00000001'
+0012   3000           00061     movlw   b'00000000'
 0013   00A8           00062     movwf   0x28
-0014   3001           00063     movlw   b'00000001'
+0014   30FF           00063     movlw   b'11111111'
 0015   00A9           00064     movwf   0x29
 0016   3000           00065     movlw   b'00000000'
 0017   00B0           00066     movwf   0x30
@@ -116,7 +116,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 002F   00C2           00092     movwf   0x42
 0030   3000           00093     movlw   b'00000000'
 0031   00C3           00094     movwf   0x43
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  3
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -175,7 +175,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 004C   0085           00145     MOVWF   TRISA
                       00146 ;   PORTB JAKO WEJSCIA DO KOORDYNATÓW
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  4
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -234,7 +234,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
                       00193 ;   TODO Zapyraj o ruch
 0069   2???           00194     call DISPLAY_PLAYER_BOARD ; Wy?wietla na LED matrix strza?y gracza 2
 006A   2???           00195     call PRZYJMIJ_RUCH ; Przyjmuje ruch od gracza 2
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  5
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -293,7 +293,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0087   10BC           00246     BCF     0x3C, 1
                       00247 
 0088   0932           00248     COMF    0x32, 0
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  6
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -352,7 +352,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00AF   113C           00299     BCF     0x3C, 2
                       00300 
 00B0   0923           00301     COMF    0x23, 0
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  7
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -411,7 +411,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00D3   0008           00352     return
                       00353     
                       00354 ;   ================PRZYJMOWANIE RUCHU GRACZY=====================
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  8
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -470,7 +470,7 @@ Message[305]: Using default destination of 1 (file).
 00FC   0AD3           00404     INCF    0x53, 1
 00FD   0BD3           00405     DECFSZ  0x53, 1
 00FE   2???           00406     goto ZAPISZ_RUCH_GRACZY
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE  9
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -529,7 +529,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00457     
 0126   00BA           00458     MOVWF   0x3A
                       00459     
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 10
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -588,7 +588,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 014D   142A           00510     BSF     0x2A, 0
                       00511 
                       00512 ;   CZYSZCZENIE ZAWARTOSCI ADRESÓW
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 11
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 11
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -647,7 +647,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0177   143A           00563     BSF     0x3A, 0
 0178   18D3           00564     BTFSC   0x53, 1
 0179   14BA           00565     BSF     0x3A, 1
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 12
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 12
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -706,7 +706,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 019F   3000           00616     MOVLW   0x00
 01A0   00D3           00617     MOVWF   0x53
                       00618     
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 13
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 13
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -765,7 +765,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00669     
 01C1                  00670 DISPLAY_PLAYER_BOARD_PLAYER_1
 01C1   3001           00671     MOVLW   0x01
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 14
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 14
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -824,7 +824,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 01F1   0845           00722     MOVF    0x45, W
 01F2   00AC           00723     MOVWF   0x2C
 01F3   2???           00724     call DISPLAY_ON_MATRIX_ROW_DATA
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 15
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 15
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -883,7 +883,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 021F   00BB           00775     MOVWF   0x3B
 0220                  00776 DISPLAY_VALUE_LOOP
 0220   1005           00777     BCF     PORTA, 0
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 16
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 16
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -942,7 +942,7 @@ Message[305]: Using default destination of 1 (file).
 0241   2???           00822     goto CZEKAJ1_LCD
 0242   2???           00823     goto CZEKAJ2_LCD
                       00824  
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 17
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 17
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -1001,7 +1001,7 @@ Warning[207]: Found label after column 1. (WRITE_A)
 0261   3041           00869     movlw b'01000001' ;A
 0262   0088           00870     movwf PORTD
 0263   2???           00871     call WRITE
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 18
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 18
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -1060,7 +1060,7 @@ Warning[207]: Found label after column 1. (WRITE_H)
 0288   0008           00915     return
 Warning[207]: Found label after column 1. (WRITE_I)
 0289                  00916  WRITE_I
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 19
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 19
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -1119,7 +1119,7 @@ Warning[207]: Found label after column 1. (WRITE_P)
 02AD   0088           00960     movwf PORTD
 02AE   2???           00961     call WRITE
 02AF   2???           00962     call ZATWIERDZ
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 20
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 20
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -1178,7 +1178,7 @@ Warning[207]: Found label after column 1. (WRITE_Z)
 Warning[207]: Found label after column 1. (WRITE_ONE)
 02D4                  01006  WRITE_ONE
 02D4   3031           01007     movlw b'00110001' ;1
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 21
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 21
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -1237,7 +1237,7 @@ Warning[207]: Found label after column 1. (KOLUMNA)
 02FB   2???           01052     call GRACZ_2
 02FC   2???           01053     call NEXT_LINE
 02FD   2???           01054     call WRITE_W
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 22
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 22
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -1296,7 +1296,7 @@ Warning[207]: Found label after column 1. (TRAFIONY)
 0329   2???           01103     call WRITE_F
 032A   2???           01104     call WRITE_I
 032B   2???           01105     call WRITE_O
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 23
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 23
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -1355,7 +1355,7 @@ Warning[207]: Found label after column 1. (GRACZ_1)
 0356   0008           01153     return
 Warning[207]: Found label after column 1. (GRACZ_2)
 0357                  01154  GRACZ_2
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 24
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 24
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -1371,7 +1371,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 035E   2???           01162     call WRITE_TWO
 035F   0008           01163     return
 3FBB                  01164    end
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 25
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 25
 
 
 SYMBOL TABLE
@@ -1430,7 +1430,7 @@ CHS1                              00000004
 CHS2                              00000005
 CIS                               00000003
 CKE                               00000006
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 26
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 26
 
 
 SYMBOL TABLE
@@ -1489,7 +1489,7 @@ FSR                               00000004
 GCEN                              00000007
 GIE                               00000007
 GO                                00000002
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 27
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 27
 
 
 SYMBOL TABLE
@@ -1548,7 +1548,7 @@ PIE1                              0000008C
 PIE2                              0000008D
 PIR1                              0000000C
 PIR2                              0000000D
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 28
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 28
 
 
 SYMBOL TABLE
@@ -1607,7 +1607,7 @@ RD0                               00000000
 RD1                               00000001
 RD2                               00000002
 RD3                               00000003
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 29
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 29
 
 
 SYMBOL TABLE
@@ -1666,7 +1666,7 @@ T2CKPS0                           00000000
 T2CKPS1                           00000001
 T2CON                             00000012
 TMR0                              00000001
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 30
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 30
 
 
 SYMBOL TABLE
@@ -1725,7 +1725,7 @@ TRISD5                            00000005
 TRISD6                            00000006
 TRISD7                            00000007
 TRISE                             00000089
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 31
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 31
 
 
 SYMBOL TABLE
@@ -1784,7 +1784,7 @@ WRITE_Z                           000002CF
 WYGRAL_GRACZ_1_TEKST              00000070
 WYGRAL_GRACZ_2_TEKST              0000009D
 WYGRANA                           00000340
-MPASM 5.83                          MAIN.ASM   4-24-2024  20:51:57         PAGE 32
+MPASM 5.83                          MAIN.ASM   4-25-2024  20:40:53         PAGE 32
 
 
 SYMBOL TABLE

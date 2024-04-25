@@ -40,7 +40,7 @@ START
 ;
 ;   W celu testow, rozlozona minimalna ilosc statkow
 ;   Poczatkowy board state pierwszego gracza:
-    movlw   b'10000000'
+    movlw   b'11111111'
     movwf   0x20
     movlw   b'00000000'
     movwf   0x21
@@ -58,9 +58,9 @@ START
     movwf   0x27
 ; 
 ;   Poczatkowy board state drugiego gracza:
-    movlw   b'00000001'
+    movlw   b'00000000'
     movwf   0x28
-    movlw   b'00000001'
+    movlw   b'11111111'
     movwf   0x29
     movlw   b'00000000'
     movwf   0x30
